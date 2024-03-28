@@ -1,0 +1,51 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Database
+*.sqlite3
+*.db
+
+# Static files
+/static/
+
+# Media files
+/media/
+
+# Virtual environment
+venv/
+.env
+
+# Ignore pipenv/venv dependency directories
+# (Automatically generated)
+/.venv
+/pipenv
+/.pipenv
+.env
+.djangoenv
+
+# Ignore Django secret key file
+# (Keep this file secure and do not share it)
+secret_key.txt
+
+# Ignore local settings file
+# (This usually contains sensitive information and shouldn't be shared)
+local_settings.py
+
+# Ignore production settings file
+# (This might contain sensitive information and shouldn't be shared)
+production_settings.py
+
+# Ignore logs
+logs/
+
+# Ignore coverage reports
+coverage/
+
+# Ignore migration files for third-party apps
+**/migrations/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
