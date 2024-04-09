@@ -1,5 +1,7 @@
 from decouple import config
 from pathlib import Path
+import django.contrib.auth
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -14,6 +16,17 @@ SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
+
+# REST FRAMEWORK
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjanoModelPermissionsOrAnonReadOnly',
+    ],
+}
 
 #CSRF TRUSTED ORIGINS
 CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS',
