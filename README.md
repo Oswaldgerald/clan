@@ -65,3 +65,4 @@ The initial models cover the document's proposed entities:
 Admin functionality now includes bulk verification/archive actions, CSV member export, duplicate hints, reciprocal relationship creation, approval review actions, and read-only audit logs.
 
 Family tree support includes `/family-tree/` and `/family-tree/data/`, returning a node/edge graph around a root member. Next implementation work should add privacy-aware querysets, a richer interactive tree canvas, advanced reports, and automated audit logging.
+# clan
