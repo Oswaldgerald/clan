@@ -31,7 +31,9 @@
       </div>
       <span class="outline-help"><i data-lucide="square-plus" aria-hidden="true"></i> Expand a person to see their children</span>
     </div>
-    <div id="tree" class="outline-tree" aria-live="polite"></div>
+    <div id="tree" class="outline-tree" aria-live="polite">
+      <p class="tree-loading"><span class="loader-mark" aria-hidden="true"><span></span><span></span><span></span></span>Loading family tree...</p>
+    </div>
   {% else %}
     <p class="muted">Add members in the administration area to begin building the family tree.</p>
   {% endif %}
@@ -146,7 +148,7 @@
         return;
       }
       toggle.dataset.loading = "true";
-      toggle.textContent = "…";
+      toggle.classList.add("is-loading");
       try {
         const data = await fetchPerson(person.id);
         if (!childrenList.childElementCount) {
@@ -167,6 +169,7 @@
         toggle.textContent = "+";
       } finally {
         toggle.dataset.loading = "false";
+        toggle.classList.remove("is-loading");
       }
     });
     return item;

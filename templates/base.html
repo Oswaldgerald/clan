@@ -35,6 +35,48 @@
       background: var(--soft);
       line-height: 1.45;
     }
+    .page-loader[hidden] { display: none; }
+    .page-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(244, 249, 252, .78);
+      backdrop-filter: blur(3px);
+    }
+    .page-loader-content {
+      display: grid;
+      justify-items: center;
+      gap: 13px;
+      min-width: 160px;
+      padding: 22px 28px;
+      border: 1px solid #c9e0f0;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow-md);
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .loader-mark { display: flex; align-items: center; gap: 7px; height: 28px; }
+    .loader-mark span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: loader-wave 1s ease-in-out infinite;
+    }
+    .loader-mark span:nth-child(2) { animation-delay: .13s; background: var(--teal); }
+    .loader-mark span:nth-child(3) { animation-delay: .26s; background: var(--accent-dark); }
+    @keyframes loader-wave {
+      0%, 60%, 100% { transform: translateY(0); opacity: .6; }
+      30% { transform: translateY(-8px); opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .loader-mark span { animation: none; opacity: 1; }
+    }
     a { color: var(--accent-dark); text-decoration: none; }
     a:hover { text-decoration: underline; }
     header {
@@ -680,6 +722,8 @@
     .outline-help { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
     .outline-help svg { width: 16px; height: 16px; }
     .outline-tree { width: min(100%, 840px); margin: 20px auto 0; }
+    .tree-loading { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 100px; color: var(--muted); font-size: 13px; }
+    .tree-loading .loader-mark { transform: scale(.7); }
     .outline-tree ul { margin: 0; padding: 0; list-style: none; }
     .outline-children { position: relative; margin-left: 22px !important; padding-left: 24px !important; }
     .outline-children::before { content: ""; position: absolute; top: 0; bottom: 24px; left: 0; border-left: 1px solid #b9cddd; }
@@ -689,6 +733,19 @@
     .outline-row { display: grid; grid-template-columns: 32px minmax(0, 1fr); align-items: center; gap: 5px; min-height: 58px; }
     .outline-toggle { display: grid; place-items: center; width: 28px; min-height: 28px; padding: 0; border: 0; border-radius: 4px; background: transparent; box-shadow: none; color: var(--accent); font-size: 25px; font-weight: 400; line-height: 1; }
     .outline-toggle:hover { background: var(--cloud); }
+    .outline-toggle.is-loading { color: transparent; position: relative; }
+    .outline-toggle.is-loading::after {
+      content: "";
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      border: 2px solid #bdd9ee;
+      border-top-color: var(--accent-dark);
+      border-radius: 50%;
+      animation: loader-spin .7s linear infinite;
+    }
+    @keyframes loader-spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .outline-toggle.is-loading::after { animation: none; } }
     .outline-toggle.is-leaf { color: #9babb6; cursor: default; }
     .outline-person { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 7px 10px; border-radius: 6px; color: var(--navy); }
     .outline-person:hover { background: #f3f8fc; }
@@ -812,6 +869,12 @@
   </style>
 </head>
 <body class="{% block body_class %}{% endblock %}">
+  <div class="page-loader" data-page-loader hidden role="status" aria-live="polite" aria-label="Loading">
+    <div class="page-loader-content">
+      <span class="loader-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span>Loading...</span>
+    </div>
+  </div>
   <header>
     <a class="brand" href="{% url 'dashboard' %}" aria-label="{{ clan_name }} Clan Registry home">
       <span class="brand-mark"><i data-lucide="network" aria-hidden="true"></i></span>
@@ -909,6 +972,42 @@
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <script>
+    function setupPageLoader() {
+      const loader = document.querySelector('[data-page-loader]');
+      let showTimer;
+      let safetyTimer;
+
+      function hideLoader() {
+        clearTimeout(showTimer);
+        clearTimeout(safetyTimer);
+        loader.hidden = true;
+      }
+
+      function showLoader() {
+        clearTimeout(showTimer);
+        showTimer = setTimeout(() => {
+          loader.hidden = false;
+          safetyTimer = setTimeout(hideLoader, 15000);
+        }, 140);
+      }
+
+      document.addEventListener('click', (event) => {
+        const link = event.target.closest('a[href]');
+        if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        if (link.hasAttribute('download') || link.target && link.target !== '_self') return;
+        const url = new URL(link.href, window.location.href);
+        if (url.origin !== window.location.origin || !['http:', 'https:'].includes(url.protocol)) return;
+        if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return;
+        if (/\/(import\/(template|sample))\/$/.test(url.pathname)) return;
+        showLoader();
+      });
+
+      document.addEventListener('submit', (event) => {
+        if (!event.defaultPrevented) showLoader();
+      });
+      window.addEventListener('pageshow', hideLoader);
+    }
+
     function setupDatePickers() {
       if (!window.jQuery || !jQuery.fn.datepicker) return;
 
@@ -1115,6 +1214,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      setupPageLoader();
       setupDatePickers();
       setupSearchableSelects();
       setupLivingStatusControls();
