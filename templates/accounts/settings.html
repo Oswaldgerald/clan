@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Account Settings - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Account Settings</h1>
+    <p class="muted">Manage your login account and contact information.</p>
+  </div>
+</section>
+
+<section class="card" style="max-width: 760px;">
+  <form method="post" class="form-grid">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+      <div>
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {{ field.errors }}
+      </div>
+    {% endfor %}
+    <button type="submit">Save Settings</button>
+  </form>
+</section>
+{% endblock %}

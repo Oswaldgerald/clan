@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | {{ clan_name }} Clan Administration{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'admin/css/moshi-admin.css' %}">
+{% endblock %}
+
+{% block branding %}
+  <div class="moshi-admin-brand">
+    <span class="moshi-admin-mark" aria-hidden="true">{{ clan_initial }}</span>
+    <span>
+      <strong>{{ clan_name }} Clan Registry</strong>
+      <small>Administration</small>
+    </span>
+  </div>
+{% endblock %}
+
+{% block nav-global %}
+  <a class="moshi-portal-link" href="{% url 'management-dashboard' %}">Management Portal</a>
+{% endblock %}

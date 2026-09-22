@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Add Child - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Add Child</h1>
+    <p class="muted">Parent: <a href="{{ parent.get_absolute_url }}">{{ parent.full_name }}</a></p>
+  </div>
+  <a class="button button-secondary" href="{{ parent.get_absolute_url }}">Back to Profile</a>
+</section>
+
+<section class="add-child-options">
+  <div class="card add-child-option">
+    <h2>Existing member</h2>
+    <p class="muted">Connect someone already in the registry to {{ parent.full_name }}.</p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <label for="{{ form.child.id_for_label }}">{{ form.child.label }}</label>
+      {{ form.child }}
+      {{ form.child.errors }}
+      <button type="submit"><i data-lucide="link" aria-hidden="true"></i> Submit parent-child link</button>
+    </form>
+  </div>
+  <div class="card add-child-option">
+    <h2>New member</h2>
+    <p class="muted">Create a new relative with {{ parent.full_name }} preselected as {% if parent.gender == 'male' %}father{% else %}mother{% endif %}.</p>
+    <a class="button" href="{% url 'submit-relative' %}?parent={{ parent.pk }}"><i data-lucide="user-plus" aria-hidden="true"></i> Add new member</a>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Clan Settings - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Clan Settings</h1>
+    <p class="muted">Set the name used throughout this registry.</p>
+  </div>
+</section>
+<section class="card" style="max-width: 680px;">
+  <form method="post" class="form-grid">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div>
+      <label for="{{ form.clan_name.id_for_label }}">{{ form.clan_name.label }}</label>
+      {{ form.clan_name }}
+      {{ form.clan_name.errors }}
+    </div>
+    <p class="muted">Existing member names, clan values, and IDs will remain unchanged. New records use this name by default.</p>
+    <button type="submit">Save Clan Name</button>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Relationship - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Submit Relationship</h1>
+    <p class="muted">Connect two people in the registry. An administrator or elder will verify it.</p>
+  </div>
+  <a class="button" href="{% url 'submit-relative' %}">Submit Missing Person</a>
+</section>
+
+<section class="card">
+  <form method="post" class="form-grid">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+      <div>
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {{ field.errors }}
+      </div>
+    {% endfor %}
+    <button type="submit">Submit Relationship</button>
+  </form>
+</section>
+{% endblock %}

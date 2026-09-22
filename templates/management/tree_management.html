@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Tree Management - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Family Tree Management</h1>
+    <p class="muted">Select a member and manage relatives. Parent-child links do not require or imply marriage.</p>
+  </div>
+  <a class="button" href="/admin/members/relationship/add/">Add Relationship</a>
+</section>
+
+<section class="card">
+  <form method="get" class="search">
+    <select name="root">
+      {% for person in roots %}
+        <option value="{{ person.pk }}" {% if root and person.pk == root.pk %}selected{% endif %}>{{ person.full_name }} - {{ person.member_id }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Load Tree</button>
+  </form>
+  {% if root %}
+    <p class="muted">Current root: <strong>{{ root.full_name }}</strong></p>
+    <div class="action-group">
+      <a class="button button-small" href="{% url 'family-tree' %}?root={{ root.pk }}">Open Tree</a>
+      <a class="button button-secondary button-small" href="/admin/members/person/{{ root.pk }}/change/">Edit Root</a>
+      <a class="button button-secondary button-small" href="{% url 'management-relationship-add' %}">Add Relative</a>
+    </div>
+  {% else %}
+    <p class="muted">Add members before managing the tree.</p>
+  {% endif %}
+</section>
+
+{% if root %}
+<section class="summary-grid tree-summary">
+  <div class="summary-item"><strong>{{ tree.nodes|length }}</strong><span>Connected members</span></div>
+  <div class="summary-item"><strong>{{ tree.edges|length }}</strong><span>Verified connections</span></div>
+  <div class="summary-item"><strong>{{ relationships.paginator.count }}</strong><span>Direct records</span></div>
+</section>
+
+<section class="section-block">
+  <div class="section-heading">
+    <div><h2>Direct relationship records</h2><p class="muted">Includes pending records so administrators can identify gaps and conflicts.</p></div>
+  </div>
+  <table>
+    <thead><tr><th>From</th><th>Relationship</th><th>To</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for relationship in relationships %}
+      <tr>
+        <td>{{ relationship.from_person.full_name }}</td>
+        <td>{{ relationship.get_relationship_type_display }}</td>
+        <td>{{ relationship.to_person.full_name }}</td>
+        <td><span class="status-badge status-{{ relationship.status }}">{{ relationship.get_status_display }}</span></td>
+        <td><div class="action-group">
+          <a class="button button-small" href="{% url 'management-relationship-edit' relationship.pk %}">Edit</a>
+          <a class="button button-danger button-small" href="{% url 'management-relationship-delete' relationship.pk %}">Delete</a>
+        </div></td>
+      </tr>
+      {% empty %}<tr><td colspan="5" class="muted">No direct relationship records found.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+  {% include "partials/pagination.html" with page_obj=relationships pagination_query=pagination_query label="Relationships" %}
+</section>
+{% endif %}
+{% endblock %}

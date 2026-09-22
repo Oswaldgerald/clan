@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Members - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Clan Members</h1>
+    <p class="muted">Search by name, member ID, residence, or occupation.</p>
+  </div>
+</section>
+
+<section class="grid member-summary" aria-label="Member summary">
+  <article class="card"><span class="muted">Total Members</span><div class="stat-value">{{ stats.total }}</div></article>
+  <article class="card"><span class="muted">Male</span><div class="stat-value">{{ stats.male }}</div></article>
+  <article class="card"><span class="muted">Female</span><div class="stat-value">{{ stats.female }}</div></article>
+  <article class="card"><span class="muted">Living</span><div class="stat-value">{{ stats.living }}</div></article>
+  <article class="card"><span class="muted">Deceased</span><div class="stat-value">{{ stats.deceased }}</div></article>
+</section>
+
+<form class="member-filters" method="get">
+  <div>
+    <label for="member-search">Search</label>
+    <input id="member-search" type="search" name="q" value="{{ query }}" placeholder="Name, member ID, residence, occupation">
+  </div>
+  <div>
+    <label for="gender-filter">Gender</label>
+    <select id="gender-filter" name="gender">
+      <option value="">All genders</option>
+      <option value="male" {% if gender_filter == "male" %}selected{% endif %}>Male</option>
+      <option value="female" {% if gender_filter == "female" %}selected{% endif %}>Female</option>
+    </select>
+  </div>
+  <div>
+    <label for="living-filter">Living status</label>
+    <select id="living-filter" name="living_status">
+      <option value="">All statuses</option>
+      <option value="living" {% if living_filter == "living" %}selected{% endif %}>Living</option>
+      <option value="deceased" {% if living_filter == "deceased" %}selected{% endif %}>Deceased</option>
+    </select>
+  </div>
+  <div>
+    <label for="role-filter">Account role</label>
+    <select id="role-filter" name="role">
+      <option value="">All roles</option>
+      {% for value, label in roles %}
+        <option value="{{ value }}" {% if role_filter == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button class="filter-action" type="submit">Apply Filters</button>
+  <a class="button button-secondary filter-action" href="{% url 'member-list' %}">Clear</a>
+</form>
+
+<table>
+  <thead>
+    <tr><th>Member ID</th><th>Name</th><th>Account Role</th><th>Gender</th><th>Life Status</th><th>Status</th></tr>
+  </thead>
+  <tbody>
+    {% for member in members %}
+      <tr>
+        <td><span class="member-code">{{ member.member_id }}</span></td>
+        <td><a class="member-name" href="{{ member.get_absolute_url }}">{{ member.full_name }}</a></td>
+        <td>{% if member.account %}{{ member.account.get_role_display }}{% else %}Clan record only{% endif %}</td>
+        <td>{{ member.get_gender_display|default:"-" }}</td>
+        <td>{% if member.is_living %}Living{% else %}Deceased{% endif %}</td>
+        <td><span class="status-badge status-{{ member.status }}">{{ member.get_status_display }}</span></td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="6" class="muted">No members match the selected filters.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% include "partials/pagination.html" with page_obj=members pagination_query=pagination_query label="Members" %}
+{% endblock %}

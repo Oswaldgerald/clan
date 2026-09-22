@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Clan Dashboard</h1>
+    <p class="muted">{{ clan_name }} Clan member registry and family tree.</p>
+  </div>
+  <a class="button" href="{% url 'member-list' %}">Browse Members</a>
+</section>
+
+<section class="grid stats">
+  <article class="card"><span class="muted">Total members</span><div class="stat-value">{{ stats.total_members }}</div></article>
+  <article class="card"><span class="muted">Living</span><div class="stat-value">{{ stats.living_members }}</div></article>
+  <article class="card"><span class="muted">Deceased</span><div class="stat-value">{{ stats.deceased_members }}</div></article>
+</section>
+
+<section class="grid columns" style="margin-top: 18px;">
+  <div class="card">
+    <h2>Recently Added Members</h2>
+    <table style="margin-top: 12px;">
+      <thead><tr><th>Member</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for member in recent_members %}
+          <tr>
+            <td><a class="member-name" href="{{ member.get_absolute_url }}">{{ member.full_name }}</a></td>
+            <td><span class="status-badge status-{{ member.status }}">{{ member.get_status_display }}</span></td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="2" class="muted">No members have been registered yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <aside class="grid">
+    <div class="card">
+      <h2>Announcements</h2>
+      {% for announcement in recent_announcements %}
+        <p><strong>{{ announcement.title }}</strong><br><span class="muted">{{ announcement.published_at|date:"M j, Y" }}</span></p>
+      {% empty %}
+        <p class="muted">No announcements yet.</p>
+      {% endfor %}
+    </div>
+  </aside>
+</section>
+{% endblock %}

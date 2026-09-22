@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Management - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Management Command Center</h1>
+    <p class="muted">Operational pages for approval, verification, duplicate review, and tree stewardship.</p>
+  </div>
+  <a class="button" href="/admin/">Open Django Admin</a>
+</section>
+
+<section class="grid management-grid">
+  <a class="card" href="{% url 'management-pending' %}">
+    <span class="muted">Pending members</span>
+    <div class="stat-value">{{ stats.pending_members }}</div>
+  </a>
+  <a class="card" href="{% url 'management-pending' %}">
+    <span class="muted">Pending relationships</span>
+    <div class="stat-value">{{ stats.pending_relationships }}</div>
+  </a>
+  <a class="card" href="{% url 'management-pending' %}">
+    <span class="muted">Correction requests</span>
+    <div class="stat-value">{{ stats.pending_corrections }}</div>
+  </a>
+</section>
+
+<section class="grid management-grid" style="margin-top: 18px;">
+  <a class="card" href="{% url 'management-member-add' %}">
+    <h2>Add Member</h2>
+    <p class="muted">Create an official clan member record directly.</p>
+  </a>
+  <a class="card" href="{% url 'management-members' %}">
+    <h2>Member CRUD</h2>
+    <p class="muted">Search, edit, approve, archive, or delete member records.</p>
+  </a>
+  <a class="card" href="{% url 'management-relationship-add' %}">
+    <h2>Add Relationship</h2>
+    <p class="muted">Connect parents, children, spouses, siblings, and guardians.</p>
+  </a>
+  <a class="card" href="{% url 'management-relationships' %}">
+    <h2>Relationship CRUD</h2>
+    <p class="muted">Review and maintain relationship records.</p>
+  </a>
+</section>
+
+<section class="card" style="margin-top: 18px;">
+  <h2>Recent Member Records</h2>
+  <table style="margin-top: 12px;">
+    <thead><tr><th>Member</th><th>Status</th><th>Admin</th></tr></thead>
+    <tbody>
+      {% for member in recent_members %}
+        <tr>
+          <td><span class="member-name">{{ member.full_name }}</span></td>
+          <td><span class="status-badge status-{{ member.status }}">{{ member.get_status_display }}</span></td>
+          <td><a class="button button-secondary button-small" href="/admin/members/person/{{ member.pk }}/change/">Manage</a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="3" class="muted">No member records yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

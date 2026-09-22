@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}My Submissions - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>My Submissions</h1>
+    <p class="muted">Track people and relationship records you submitted for approval.</p>
+  </div>
+  <a class="button" href="{% url 'submit-relative' %}">Submit Relative</a>
+</section>
+
+<section class="card">
+  <h2>People Submitted</h2>
+  <table style="margin-top: 12px;">
+    <thead><tr><th>Member ID</th><th>Name</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for person in submitted_people %}
+        <tr>
+          <td><span class="member-code">{{ person.member_id }}</span></td>
+          <td><span class="member-name">{{ person.full_name }}</span></td>
+          <td><span class="status-badge status-{{ person.status }}">{{ person.get_status_display }}</span></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="3" class="muted">You have not submitted people yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "partials/pagination.html" with page_obj=submitted_people pagination_query=people_query page_param="people_page" label="Submitted people" %}
+</section>
+
+<section class="card" style="margin-top: 18px;">
+  <h2>Relationships Submitted</h2>
+  <table style="margin-top: 12px;">
+    <thead><tr><th>From</th><th>Relationship</th><th>To</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for relationship in submitted_relationships %}
+        <tr>
+          <td>{{ relationship.from_person.full_name }}</td>
+          <td>{{ relationship.get_relationship_type_display }}</td>
+          <td>{{ relationship.to_person.full_name }}</td>
+          <td><span class="status-badge status-{{ relationship.status }}">{{ relationship.get_status_display }}</span></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" class="muted">You have not submitted relationships yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "partials/pagination.html" with page_obj=submitted_relationships pagination_query=relationships_query page_param="relationships_page" label="Submitted relationships" %}
+</section>
+{% endblock %}

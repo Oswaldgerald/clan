@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Register - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Member Registration</h1>
+    <p class="muted">Create a normal member login. An administrator can verify and link it to your official clan profile.</p>
+  </div>
+</section>
+
+<section class="card" style="max-width: 680px;">
+  <form method="post" class="form-grid">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+      <div>
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {{ field.errors }}
+      </div>
+    {% endfor %}
+    <button type="submit">Create Member Account</button>
+  </form>
+</section>
+{% endblock %}

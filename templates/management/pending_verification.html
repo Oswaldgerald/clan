@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Verification Queue - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Verification Queue</h1>
+    <p class="muted">Approve or reject submitted member, relationship, marriage, and correction records.</p>
+  </div>
+</section>
+
+{% include "management/partials/pending_table.html" with title="Members" model_name="person" items=members pagination_query=members_query page_param="members_page" %}
+{% include "management/partials/pending_table.html" with title="Relationships" model_name="relationship" items=relationships pagination_query=relationships_query page_param="relationships_page" %}
+<p class="muted">Marriage records are separate from parent-child records; a child may have either or both parents recorded without a marriage.</p>
+{% include "management/partials/pending_table.html" with title="Marriages" model_name="marriage" items=marriages pagination_query=marriages_query page_param="marriages_page" %}
+{% include "management/partials/pending_table.html" with title="Corrections" model_name="correction" items=corrections pagination_query=corrections_query page_param="corrections_page" %}
+{% endblock %}

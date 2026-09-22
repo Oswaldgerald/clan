@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Relationships - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Manage Relationships</h1>
+    <p class="muted">Create, review, edit, or delete family relationship records.</p>
+  </div>
+  <a class="button" href="{% url 'management-relationship-add' %}">Add Relationship</a>
+</section>
+
+<table>
+  <thead><tr><th>From</th><th>Relationship</th><th>To</th><th>Status</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for relationship in relationships %}
+      <tr>
+        <td>{{ relationship.from_person.full_name }}</td>
+        <td>{{ relationship.get_relationship_type_display }}</td>
+        <td>{{ relationship.to_person.full_name }}</td>
+        <td><span class="status-badge status-{{ relationship.status }}">{{ relationship.get_status_display }}</span></td>
+        <td><div class="action-group">
+          <a class="button button-small" href="{% url 'management-relationship-edit' relationship.pk %}"><i data-lucide="pencil" aria-hidden="true"></i>Edit</a>
+          <a class="button button-danger button-small" href="{% url 'management-relationship-delete' relationship.pk %}"><i data-lucide="trash-2" aria-hidden="true"></i>Delete</a>
+          <a class="button button-secondary button-small" href="/admin/members/relationship/{{ relationship.pk }}/change/"><i data-lucide="settings" aria-hidden="true"></i>Admin</a>
+        </div>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5" class="muted">No relationships found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% include "partials/pagination.html" with page_obj=relationships pagination_query=pagination_query label="Relationships" %}
+{% endblock %}

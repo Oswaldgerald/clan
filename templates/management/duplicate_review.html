@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Duplicate Review - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Duplicate Review</h1>
+    <p class="muted">Potential duplicates based on names, dates of birth, and shared phone numbers.</p>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Name and Birthdate Matches</h2>
+  {% for group in duplicate_groups %}
+    <table style="margin-top: 12px; margin-bottom: 16px;">
+      <thead><tr><th>Member ID</th><th>Name</th><th>Birth date</th><th>Admin</th></tr></thead>
+      <tbody>
+        {% for person in group %}
+          <tr>
+            <td>{{ person.member_id }}</td>
+            <td>{{ person.full_name }}</td>
+            <td>{{ person.date_of_birth|default:"-" }}</td>
+            <td><a class="button button-secondary button-small" href="/admin/members/person/{{ person.pk }}/change/">Review</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% empty %}
+    <p class="muted">No name/date duplicate groups found.</p>
+  {% endfor %}
+  {% include "partials/pagination.html" with page_obj=duplicate_groups pagination_query=groups_query page_param="groups_page" label="Duplicate groups" %}
+</section>
+
+<section class="card" style="margin-top: 18px;">
+  <h2>Shared Phone Numbers</h2>
+  <table style="margin-top: 12px;">
+    <thead><tr><th>Phone</th><th>Records</th></tr></thead>
+    <tbody>
+      {% for item in phone_duplicates %}
+        <tr><td>{{ item.phone_number }}</td><td>{{ item.total }}</td></tr>
+      {% empty %}
+        <tr><td colspan="2" class="muted">No shared phone numbers found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "partials/pagination.html" with page_obj=phone_duplicates pagination_query=phones_query page_param="phones_page" label="Shared phone numbers" %}
+</section>
+{% endblock %}

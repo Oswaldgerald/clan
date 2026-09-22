@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Delete - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="card" style="max-width: 640px;">
+  <h1>Confirm Delete</h1>
+  <p>Are you sure you want to delete <strong>{{ object }}</strong>?</p>
+  <form method="post" style="display: flex; gap: 10px; flex-wrap: wrap;">
+    {% csrf_token %}
+    <button class="button-danger" type="submit">Delete</button>
+    <a class="button button-secondary" href="{% url cancel_url %}">Cancel</a>
+  </form>
+</section>
+{% endblock %}

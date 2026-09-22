@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Members - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Manage Members</h1>
+    <p class="muted">Add, search, edit, approve, archive, or delete clan member records.</p>
+  </div>
+  <a class="button" href="{% url 'management-member-add' %}"><i data-lucide="user-plus" aria-hidden="true"></i>Add Member</a>
+</section>
+
+<section class="card bulk-import-panel">
+  <div>
+    <span class="bulk-step">1</span>
+    <h2>Download Excel Template</h2>
+    <p class="muted">Use the formatted template and keep its column headings unchanged.</p>
+    <div class="action-group">
+      <a class="button button-secondary" href="{% url 'management-member-import-template' %}"><i data-lucide="file-spreadsheet" aria-hidden="true"></i>Blank Template</a>
+      <a class="button" href="{% url 'management-member-import-sample' %}"><i data-lucide="download" aria-hidden="true"></i>Sample Data</a>
+    </div>
+  </div>
+  <div>
+    <span class="bulk-step">2</span>
+    <h2>Upload Completed Template</h2>
+    <p class="muted">The full workbook is validated before any member records are created.</p>
+    <form class="bulk-upload-form" method="post" action="{% url 'management-member-bulk-import' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ bulk_import_form.workbook }}
+      {{ bulk_import_form.workbook.errors }}
+      <button type="submit"><i data-lucide="upload" aria-hidden="true"></i>Import Members</button>
+    </form>
+  </div>
+</section>
+
+{% if import_errors %}
+  <section class="card import-errors">
+    <h2>Import could not be completed</h2>
+    <p>Correct the following rows and upload the workbook again. No members were created.</p>
+    <ul>
+      {% for error in import_errors %}<li>{{ error }}</li>{% endfor %}
+    </ul>
+  </section>
+{% endif %}
+
+<form class="search" method="get">
+  <input type="search" name="q" value="{{ query }}" placeholder="Search members" aria-label="Search members">
+  <button type="submit">Search</button>
+</form>
+
+<table class="member-management-table">
+    <thead><tr><th>Member ID</th><th>Name</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for member in members %}
+        <tr>
+          <td><span class="member-code">{{ member.member_id }}</span></td>
+          <td><a class="member-name" href="{{ member.get_absolute_url }}">{{ member.full_name }}</a></td>
+          <td><span class="status-badge status-{{ member.status }}">{{ member.get_status_display }}</span></td>
+          <td><div class="action-group row-actions">
+            <a class="button button-small" href="{% url 'management-member-edit' member.pk %}"><i data-lucide="pencil" aria-hidden="true"></i>Edit</a>
+            <a class="button button-danger button-small" href="{% url 'management-member-delete' member.pk %}"><i data-lucide="trash-2" aria-hidden="true"></i>Delete</a>
+            <a class="button button-secondary button-small" href="/admin/members/person/{{ member.pk }}/change/"><i data-lucide="settings" aria-hidden="true"></i>Admin</a>
+          </div></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" class="empty-state"><i data-lucide="users" aria-hidden="true"></i><span>No members found.</span></td></tr>
+      {% endfor %}
+    </tbody>
+</table>
+{% include "partials/pagination.html" with page_obj=members pagination_query=pagination_query label="Managed members" %}
+{% endblock %}

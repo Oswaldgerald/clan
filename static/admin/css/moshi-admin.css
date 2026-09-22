@@ -1,0 +1,266 @@
+:root {
+  --primary: #245f91;
+  --secondary: #16364f;
+  --accent: #eaf4fc;
+  --primary-fg: #ffffff;
+  --body-fg: #172026;
+  --body-bg: #f4f7f8;
+  --body-quiet-color: #4b5d68;
+  --body-loud-color: #172026;
+  --header-color: #ffffff;
+  --header-branding-color: #ffffff;
+  --header-bg: #16364f;
+  --header-link-color: #ffffff;
+  --breadcrumbs-fg: #d7eafa;
+  --breadcrumbs-link-fg: #ffffff;
+  --breadcrumbs-bg: #245f91;
+  --link-fg: #245f91;
+  --link-hover-color: #16364f;
+  --link-selected-fg: #18776f;
+  --hairline-color: #d9e1e6;
+  --border-color: #c8d5dd;
+  --error-fg: #b42318;
+  --message-success-bg: #e8f6f0;
+  --message-warning-bg: #fff5e8;
+  --message-error-bg: #fff0ef;
+  --darkened-bg: #edf6fc;
+  --selected-bg: #eaf4fc;
+  --selected-row: #f1f8fd;
+  --button-fg: #ffffff;
+  --button-bg: #3b82c4;
+  --button-hover-bg: #245f91;
+  --default-button-bg: #18776f;
+  --default-button-hover-bg: #12625c;
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+html[data-theme="dark"] {
+  color-scheme: light;
+  --primary: #245f91;
+  --secondary: #16364f;
+  --accent: #eaf4fc;
+  --primary-fg: #ffffff;
+  --body-fg: #172026;
+  --body-bg: #f4f7f8;
+  --body-quiet-color: #4b5d68;
+  --body-loud-color: #172026;
+  --header-color: #ffffff;
+  --header-branding-color: #ffffff;
+  --header-bg: #16364f;
+  --header-link-color: #ffffff;
+  --breadcrumbs-fg: #d7eafa;
+  --breadcrumbs-link-fg: #ffffff;
+  --breadcrumbs-bg: #245f91;
+  --link-fg: #245f91;
+  --link-hover-color: #16364f;
+  --link-selected-fg: #18776f;
+  --hairline-color: #d9e1e6;
+  --border-color: #c8d5dd;
+  --darkened-bg: #edf6fc;
+  --selected-bg: #eaf4fc;
+  --selected-row: #f1f8fd;
+}
+
+body { background: var(--body-bg); }
+
+#header {
+  min-height: 64px;
+  padding: 0 24px;
+  box-shadow: 0 1px 12px rgba(23, 32, 38, .16);
+}
+
+#branding { display: flex; align-items: center; }
+
+.moshi-admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: #fff;
+}
+
+.moshi-admin-brand > span:last-child { display: grid; line-height: 1.05; }
+.moshi-admin-brand strong { font-size: 16px; }
+.moshi-admin-brand small { margin-top: 4px; color: #b9d4e8; font-size: 11px; font-weight: 600; }
+.moshi-admin-mark {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: 8px;
+  background: #3b82c4;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+#user-tools { font-size: 12px; }
+#user-tools a { border-bottom: 0; font-weight: 650; }
+.moshi-portal-link {
+  align-self: center;
+  margin-left: auto;
+  padding: 8px 11px;
+  border: 1px solid rgba(255, 255, 255, .3);
+  border-radius: 6px;
+  color: #fff !important;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.moshi-portal-link:hover { background: rgba(255, 255, 255, .12); }
+
+div.breadcrumbs { padding: 11px 24px; font-size: 12px; }
+#content { padding: 26px 28px 48px; }
+#content h1 { color: #16364f; font-size: 26px; font-weight: 750; }
+#content h2 { color: #16364f; }
+
+.module,
+.inline-group,
+#changelist-filter,
+.submit-row {
+  overflow: hidden;
+  border: 1px solid var(--hairline-color);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(23, 32, 38, .05), 0 4px 14px rgba(23, 32, 38, .04);
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+  padding: 11px 14px;
+  background: #eaf4fc;
+  color: #294f70;
+  font-size: 13px;
+  font-weight: 800;
+}
+.module h2 a,
+.module caption a,
+.inline-group h2 a,
+.dashboard .module table th a,
+.dashboard .module table td a {
+  color: #204f76 !important;
+}
+.module h2 a:hover,
+.module caption a:hover,
+.dashboard .module table a:hover { color: #16364f !important; }
+.module table td, .module table th, .inline-group, .inline-related { color: #172026; }
+.module table td a { color: #245f91; font-weight: 650; }
+
+#content-main .app-members.module caption,
+#content-main .app-accounts.module caption,
+#content-main .app-families.module caption,
+#content-main .app-audit.module caption { border-left: 4px solid #3b82c4; }
+
+table { border-collapse: collapse; }
+thead th {
+  padding: 11px 10px;
+  background: #edf6fc;
+  color: #294f70;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+tbody tr { transition: background .12s ease; }
+tbody tr:hover { background: #f8fbfd; }
+td, th { border-color: #e5edf2; }
+
+.row1 { background: #fff; }
+.row2 { background: #fbfdfe; }
+
+input[type="text"], input[type="password"], input[type="email"], input[type="number"],
+input[type="url"], input[type="tel"], input[type="date"], textarea, select, .vTextField {
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid #c8d5dd;
+  border-radius: 7px;
+  background: #fff;
+  color: #172026;
+  font: inherit;
+  box-shadow: inset 0 1px 2px rgba(23, 32, 38, .035);
+}
+
+textarea { min-height: 110px; }
+input:focus, textarea:focus, select:focus {
+  border-color: #69aee6 !important;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 196, .16) !important;
+}
+
+.form-row { padding: 14px; border-color: #e4ebef; }
+.form-row label { color: #24343a; font-weight: 700; }
+.help, p.help, form p.help, div.help, form div.help { color: #4f626e; font-size: 12px; }
+.form-row p, .form-row .readonly { color: #2f414b; }
+.form-row label, .required label, label.required { color: #1f3038 !important; }
+.selector-chosen h2 { color: #fff; }
+
+.button, input[type="submit"], input[type="button"], .submit-row input, a.button {
+  min-height: 38px;
+  padding: 9px 14px;
+  border-radius: 6px;
+  font-weight: 700;
+  transition: background .15s ease, box-shadow .15s ease;
+}
+.button:hover, input[type="submit"]:hover, input[type="button"]:hover, a.button:hover {
+  box-shadow: 0 4px 10px rgba(36, 95, 145, .18);
+}
+.deletelink, .deletelink-box a { border-radius: 6px !important; background: #c23b32 !important; }
+
+#changelist .actions { padding: 12px 14px; background: #fff; }
+#changelist .actions select { min-width: 220px; }
+#changelist-filter { margin-left: 18px; }
+#changelist-filter h2 { background: #16364f; color: #fff; }
+#changelist-filter h3 { color: #294f70; font-size: 12px; font-weight: 800; text-transform: uppercase; }
+#changelist-filter li.selected { border-left-color: #3b82c4; }
+
+#toolbar { padding: 12px; border: 1px solid var(--hairline-color); border-radius: 8px; background: #fff; }
+#toolbar form input[type="submit"] { min-height: 42px; }
+.paginator { margin-top: 14px !important; border-radius: 8px; background: #fff; }
+
+.messagelist li { margin-bottom: 8px; border-radius: 7px; box-shadow: 0 1px 3px rgba(23, 32, 38, .06); }
+.object-tools a { border-radius: 6px; background: #3b82c4; font-weight: 700; }
+.object-tools a:hover { background: #245f91; }
+
+body.login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  isolation: isolate;
+  background-color: #edf4f7;
+  background-image: url("../../images/moshi-login-background.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+body.login::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(10, 31, 43, .42);
+}
+body.login #container { width: min(430px, calc(100% - 28px)); margin: 0; border: 1px solid rgba(255, 255, 255, .7); border-radius: 8px; background: rgba(255, 255, 255, .96); box-shadow: 0 18px 44px rgba(7, 25, 36, .34); }
+body.login #header { border-radius: 8px 8px 0 0; }
+body.login #content { padding: 28px; }
+body.login .form-row { padding: 0 0 18px; }
+body.login .form-row label { color: #172026 !important; }
+body.login .submit-row { padding: 0; border: 0; box-shadow: none; }
+body.login .submit-row input { width: 100%; }
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) body { color: #172026; background-color: #f4f7f8; }
+  html:not([data-theme="light"]) .module,
+  html:not([data-theme="light"]) .inline-group,
+  html:not([data-theme="light"]) #changelist-filter,
+  html:not([data-theme="light"]) .submit-row { color: #172026; background: #fff; }
+}
+
+@media (max-width: 767px) {
+  #header { min-height: 58px; padding: 8px 14px; }
+  .moshi-admin-brand small, .moshi-portal-link { display: none; }
+  #content { padding: 18px 14px 36px; }
+  div.breadcrumbs { padding-inline: 14px; }
+  #changelist-filter { margin-left: 0; }
+  .form-row { padding: 12px; }
+}

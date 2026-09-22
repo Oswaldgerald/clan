@@ -1,0 +1,53 @@
+<section class="card verification-section">
+  <div class="verification-heading">
+    <div>
+      <h2>{{ title }}</h2>
+      <p class="muted">{{ items.paginator.count }} record{{ items.paginator.count|pluralize }} awaiting review</p>
+    </div>
+  </div>
+  <table class="verification-table">
+    <thead><tr><th>Record</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for item in items %}
+        <tr>
+          <td>
+            {% if model_name == "relationship" %}
+              <div class="relationship-review">
+                <a class="review-person" href="{{ item.from_person.get_absolute_url }}">
+                  <span class="review-initial" aria-hidden="true">{{ item.from_person.first_name|slice:":1" }}</span>
+                  <span><strong>{{ item.from_person.full_name }}</strong><small>{{ item.from_person.member_id }}</small></span>
+                </a>
+                <span class="relationship-type">{{ item.get_relationship_type_display }}</span>
+                <a class="review-person" href="{{ item.to_person.get_absolute_url }}">
+                  <span class="review-initial" aria-hidden="true">{{ item.to_person.first_name|slice:":1" }}</span>
+                  <span><strong>{{ item.to_person.full_name }}</strong><small>{{ item.to_person.member_id }}</small></span>
+                </a>
+              </div>
+            {% else %}
+              <span class="verification-record">{{ item }}</span>
+            {% endif %}
+          </td>
+          <td><span class="status-badge status-{{ item.status }}">{{ item.get_status_display }}</span></td>
+          <td><div class="action-group verification-actions">
+            <form method="post" style="display: inline;">
+              {% csrf_token %}
+              <input type="hidden" name="model" value="{{ model_name }}">
+              <input type="hidden" name="object_id" value="{{ item.pk }}">
+              <button class="button-success button-small" type="submit" name="action" value="approve"><i data-lucide="check" aria-hidden="true"></i>Approve</button>
+            </form>
+            <form method="post" style="display: inline;">
+              {% csrf_token %}
+              <input type="hidden" name="model" value="{{ model_name }}">
+              <input type="hidden" name="object_id" value="{{ item.pk }}">
+              <button class="button-danger button-small" type="submit" name="action" value="reject"><i data-lucide="x" aria-hidden="true"></i>Reject</button>
+            </form>
+          </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="3" class="muted">No pending records.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "partials/pagination.html" with page_obj=items pagination_query=pagination_query page_param=page_param label=title %}
+</section>

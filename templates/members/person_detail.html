@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}{{ person.full_name }} - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>{{ person.full_name }}</h1>
+    <p class="muted">{{ person.member_id }}</p>
+  </div>
+  <div class="action-group">
+    <a class="button" href="{% url 'family-tree' %}?root={{ person.pk }}"><i data-lucide="git-fork" aria-hidden="true"></i>View Family Tree</a>
+    <a class="button button-secondary" href="{% url 'member-list' %}">Back to Members</a>
+  </div>
+</section>
+
+<section class="card member-profile-card">
+  <div class="member-profile-aside">
+    <div class="photo">
+    {% if person.profile_photo %}
+      <img src="{{ person.profile_photo.url }}" alt="{{ person.full_name }}">
+    {% else %}
+      <i data-lucide="user" aria-hidden="true"></i>
+    {% endif %}
+    </div>
+    <span class="status-pill {% if person.is_living %}is-living{% else %}is-deceased{% endif %}">
+      {% if person.is_living %}Living{% else %}Deceased{% endif %}
+    </span>
+  </div>
+  <div class="member-profile-content">
+    <div class="profile-section-heading">
+      <div><span>Member profile</span><h2>Personal information</h2></div>
+    </div>
+    {% if person.biography %}<p class="profile-biography">{{ person.biography }}</p>{% endif %}
+    <dl class="profile-detail-grid">
+      <div><dt>Gender</dt><dd>{{ person.get_gender_display|default:"Not recorded" }}</dd></div>
+      <div><dt>Date of birth</dt><dd>{{ person.date_of_birth|date:"d M Y"|default:"Not recorded" }}</dd></div>
+      <div><dt>Father</dt><dd>{% if person.father %}<a href="{{ person.father.get_absolute_url }}">{{ person.father.full_name }}</a>{% else %}<span>Unknown</span>{% endif %}</dd></div>
+      <div><dt>Mother</dt><dd>{% if person.mother %}<a href="{{ person.mother.get_absolute_url }}">{{ person.mother.full_name }}</a>{% else %}<span>Unknown</span>{% endif %}</dd></div>
+      <div><dt>Residence</dt><dd>{{ person.current_residence|default:"Not recorded" }}</dd></div>
+      <div><dt>Household</dt><dd>{{ person.household|default:"Unassigned" }}</dd></div>
+      {% if person.occupation %}<div><dt>Occupation</dt><dd>{{ person.occupation }}</dd></div>{% endif %}
+      {% if person.phone_number %}<div><dt>Phone</dt><dd>{{ person.phone_number }}</dd></div>{% endif %}
+      {% if not person.is_living %}
+        <div><dt>Date of Death</dt><dd>{{ person.date_of_death|date:"d M Y"|default:"Not recorded" }}</dd></div>
+        <div><dt>Place of Death</dt><dd>{{ person.place_of_death|default:"Not recorded" }}</dd></div>
+        <div><dt>Burial Location</dt><dd>{{ person.burial_location|default:"Not recorded" }}</dd></div>
+        {% if person.memorial_information %}<div class="detail-wide"><dt>Memorial</dt><dd>{{ person.memorial_information }}</dd></div>{% endif %}
+      {% endif %}
+    </dl>
+  </div>
+</section>
+
+<section class="grid profile-family-grid">
+  <div class="card family-panel">
+    <div class="family-panel-heading">
+      <div><h2>Children</h2><span>{{ children.paginator.count }} recorded</span></div>
+      <a class="icon-button" href="{% url 'add-child' person.pk %}" title="Add child" aria-label="Add child"><i data-lucide="plus" aria-hidden="true"></i></a>
+    </div>
+    <div class="family-record-list">
+    {% for child in children %}
+      <a class="family-record" href="{{ child.get_absolute_url }}">
+        <span class="family-record-icon"><i data-lucide="user" aria-hidden="true"></i></span>
+        <span><strong>{{ child.full_name }}</strong><small>{{ child.member_id }}</small></span>
+        <i data-lucide="chevron-right" aria-hidden="true"></i>
+      </a>
+    {% empty %}
+      <div class="family-empty"><i data-lucide="users" aria-hidden="true"></i><p>No children recorded.</p></div>
+    {% endfor %}
+    </div>
+    {% include "partials/pagination.html" with page_obj=children pagination_query=children_query page_param="children_page" label="Children" %}
+  </div>
+  <div class="card family-panel">
+    <div class="family-panel-heading">
+      <div><h2>Relationships</h2><span>{{ relationships.paginator.count }} verified</span></div>
+      <a class="icon-button" href="{% url 'submit-relationship' %}?from={{ person.pk }}" title="Add relationship" aria-label="Add relationship"><i data-lucide="plus" aria-hidden="true"></i></a>
+    </div>
+    <div class="family-record-list">
+    {% for relationship in relationships %}
+      <a class="family-record" href="{{ relationship.to_person.get_absolute_url }}">
+        <span class="relationship-badge">{{ relationship.get_relationship_type_display }} of</span>
+        <span><strong>{{ relationship.to_person.full_name }}</strong><small>{{ relationship.to_person.member_id }}</small></span>
+        <i data-lucide="chevron-right" aria-hidden="true"></i>
+      </a>
+    {% empty %}
+      <div class="family-empty"><i data-lucide="network" aria-hidden="true"></i><p>No additional relationships recorded.</p></div>
+    {% endfor %}
+    </div>
+    {% include "partials/pagination.html" with page_obj=relationships pagination_query=relationships_query page_param="relationships_page" label="Relationships" %}
+  </div>
+</section>
+{% endblock %}

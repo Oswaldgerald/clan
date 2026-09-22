@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>{{ title }}</h1>
+    <p class="muted">Maintain official clan registry details and workflow status.</p>
+  </div>
+  <a class="button button-secondary" href="{% url 'management-members' %}">Back to Members</a>
+</section>
+
+<section class="card">
+  <form method="post" enctype="multipart/form-data" class="sectioned-form">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for section in form.sections %}
+      <section class="form-section">
+        <div class="form-section-header">
+          <h2>{{ section.title }}</h2>
+          <p class="muted">{{ section.description }}</p>
+        </div>
+        <div class="form-grid">
+          {% for field in section.fields %}
+            <div>
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.help_text %}<p class="muted">{{ field.help_text }}</p>{% endif %}
+              {{ field.errors }}
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+    {% endfor %}
+    <button type="submit">Save Member</button>
+  </form>
+</section>
+{% endblock %}
