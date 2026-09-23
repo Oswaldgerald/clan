@@ -339,6 +339,12 @@ class PortalAccessTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Member Login")
 
+    def test_registration_gender_starts_unselected(self):
+        response = self.client.get(reverse("member-register"))
+
+        self.assertEqual(response.context["form"]["gender"].value(), None)
+        self.assertContains(response, "Select gender (Chagua jinsia)")
+
     def test_member_profile_requires_login(self):
         response = self.client.get(reverse("member-profile"))
 

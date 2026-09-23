@@ -14,7 +14,10 @@ class MemberRegistrationForm(UserCreationForm):
     last_name = forms.CharField(max_length=150)
     email = forms.EmailField()
     phone_number = international_phone_field(label="Phone number (Namba ya simu)")
-    gender = forms.ChoiceField(choices=Person.Gender.choices, label="Gender (Jinsia)")
+    gender = forms.ChoiceField(
+        choices=(("", "Select gender (Chagua jinsia)"), *Person.Gender.choices),
+        label="Gender (Jinsia)",
+    )
 
     class Meta:
         model = User

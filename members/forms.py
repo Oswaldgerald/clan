@@ -188,7 +188,7 @@ class PersonForm(forms.ModelForm):
         self.fields["member_id"].required = False
         self.fields["member_id"].help_text = "Leave blank to generate automatically. (Acha wazi ili itengenezwe moja kwa moja.)"
         self.fields["gender"].required = True
-        self.fields["gender"].choices = Person.Gender.choices
+        self.fields["gender"].choices = (("", "Select gender (Chagua jinsia)"), *Person.Gender.choices)
         for field_name in ("current_residence",):
             if field_name not in self.fields:
                 continue
