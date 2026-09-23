@@ -2,6 +2,7 @@ from django import forms
 from django.utils import timezone
 
 from config.choices import Status
+from config.phone import international_phone_field
 from families.identity import clan_prefix
 
 from .models import Person, Relationship
@@ -82,6 +83,9 @@ class BulkMemberImportForm(forms.Form):
 
 
 class PersonForm(forms.ModelForm):
+    phone_number = international_phone_field(
+        label="Phone number (Namba ya simu)",
+    )
     FIELD_SECTIONS = (
         (
             "Identity (Utambulisho)",

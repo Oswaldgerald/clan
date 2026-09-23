@@ -1,5 +1,4 @@
 from django.contrib import messages
-from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
@@ -10,10 +9,12 @@ def register(request):
     if request.method == "POST":
         form = MemberRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, "Your member account has been created and is pending clan verification.")
-            return redirect("member-profile")
+            form.save()
+            messages.success(
+                request,
+                "Registration received. You can log in after an administrator approves your clan membership.",
+            )
+            return redirect("login")
     else:
         form = MemberRegistrationForm()
     return render(request, "accounts/register.html", {"form": form})

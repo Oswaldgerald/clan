@@ -1,12 +1,16 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
+from .forms import AdminUserChangeForm, AdminUserCreationForm
 from .models import User
+from config.choices import Status
 
 
 @admin.action(description="Mark selected users as verified clan members")
 def mark_verified(modeladmin, request, queryset):
     queryset.update(is_verified_member=True)
+    from members.models import Person
+    Person.objects.filter(account__in=queryset).update(status=Status.VERIFIED)
 
 
 @admin.action(description="Assign registered member role")
@@ -16,6 +20,8 @@ def assign_member_role(modeladmin, request, queryset):
 
 @admin.register(User)
 class ClanUserAdmin(UserAdmin):
+    form = AdminUserChangeForm
+    add_form = AdminUserCreationForm
     fieldsets = UserAdmin.fieldsets + (
         ("Clan access", {"fields": ("role", "phone_number", "is_verified_member")}),
     )

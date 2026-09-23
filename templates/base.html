@@ -447,6 +447,14 @@
     .form-grid > div {
       min-width: 0;
     }
+    .phone-input-group { display: grid; grid-template-columns: minmax(170px, .8fr) minmax(180px, 1.2fr); gap: 8px; }
+    .phone-input-group > label,
+    .phone-input-group > .helptext,
+    .phone-input-group > .muted,
+    .phone-input-group > .errorlist { grid-column: 1 / -1; }
+    .phone-input-group > label { margin-bottom: -1px; }
+    .phone-input-group > .select2-container { grid-column: 1; }
+    .phone-input-group > input[type="tel"] { grid-column: 2; }
     .form-grid > div:has(textarea),
     .form-grid > div:has(input[type="file"]),
     .form-grid > div:has(.errorlist),
@@ -838,6 +846,9 @@
       .profile-detail-grid > div, .profile-detail-grid > div:nth-child(odd), .profile-detail-grid > div:nth-last-child(-n + 2) { border-right: 0; border-bottom: 1px solid var(--line); }
       .profile-detail-grid > div:last-child { border-bottom: 0; }
       .form-grid { grid-template-columns: 1fr; }
+      .phone-input-group { grid-template-columns: 1fr; }
+      .phone-input-group > .select2-container,
+      .phone-input-group > input[type="tel"] { grid-column: 1; }
       .form-section { padding: 14px; }
       form.search { flex-direction: column; }
       .member-filters { grid-template-columns: 1fr; }
@@ -1051,6 +1062,12 @@
       });
     }
 
+    function setupPhoneInputs() {
+      document.querySelectorAll('select[name$="phone_number_0"]').forEach((countrySelect) => {
+        countrySelect.closest('div')?.classList.add('phone-input-group');
+      });
+    }
+
     function setupLivingStatusControls() {
       document.querySelectorAll('form').forEach((form) => {
         const livingField = form.querySelector('[name="is_living"]');
@@ -1216,6 +1233,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       setupPageLoader();
       setupDatePickers();
+      setupPhoneInputs();
       setupSearchableSelects();
       setupLivingStatusControls();
       setupLocationControls();

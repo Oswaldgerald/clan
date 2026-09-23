@@ -1,8 +1,10 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserChangeForm, UserCreationForm
+from django.core.exceptions import ValidationError
 
 from members.forms import OUTSIDE_TANZANIA, residence_choices
 from members.models import Person
+from config.phone import international_phone_field
 
 from .models import User
 
@@ -11,7 +13,7 @@ class MemberRegistrationForm(UserCreationForm):
     first_name = forms.CharField(max_length=150)
     last_name = forms.CharField(max_length=150)
     email = forms.EmailField()
-    phone_number = forms.CharField(max_length=32, required=False)
+    phone_number = international_phone_field(label="Phone number (Namba ya simu)")
     gender = forms.ChoiceField(choices=Person.Gender.choices, label="Gender (Jinsia)")
 
     class Meta:
@@ -31,6 +33,7 @@ class MemberRegistrationForm(UserCreationForm):
 
 
 class MemberProfileForm(forms.ModelForm):
+    phone_number = international_phone_field(label="Phone number (Namba ya simu)")
     class Meta:
         model = Person
         fields = (
@@ -78,6 +81,34 @@ class ProfilePhotoForm(forms.ModelForm):
 
 
 class AccountSettingsForm(forms.ModelForm):
+    phone_number = international_phone_field(label="Phone number (Namba ya simu)")
+
     class Meta:
         model = User
         fields = ("first_name", "last_name", "email", "phone_number")
+
+
+class AdminUserChangeForm(UserChangeForm):
+    phone_number = international_phone_field(label="Phone number")
+
+    class Meta(UserChangeForm.Meta):
+        model = User
+        fields = "__all__"
+
+
+class AdminUserCreationForm(UserCreationForm):
+    phone_number = international_phone_field(label="Phone number")
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = UserCreationForm.Meta.fields + ("email", "phone_number")
+
+
+class ApprovedMemberAuthenticationForm(AuthenticationForm):
+    def confirm_login_allowed(self, user):
+        super().confirm_login_allowed(user)
+        if not user.is_staff and not user.is_verified_member:
+            raise ValidationError(
+                "Your clan membership is awaiting administrator approval.",
+                code="membership_pending",
+            )

@@ -291,6 +291,9 @@ def pending_verification(request):
             obj.reviewed_by = request.user
             obj.reviewed_at = timezone.now()
         obj.save()
+        if isinstance(obj, Person) and obj.account_id:
+            obj.account.is_verified_member = status == Status.VERIFIED
+            obj.account.save(update_fields=["is_verified_member"])
         if isinstance(obj, Relationship) and status == Status.VERIFIED:
             create_reciprocal_relationship(obj, request.user)
         AuditLog.objects.create(

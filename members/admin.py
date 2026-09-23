@@ -26,6 +26,8 @@ from .models import (
 @admin.action(description="Mark selected records as verified")
 def mark_verified(modeladmin, request, queryset):
     updated = queryset.update(status=Status.VERIFIED)
+    from accounts.models import User
+    User.objects.filter(person_profile__in=queryset).update(is_verified_member=True)
     modeladmin.message_user(request, f"{updated} record(s) marked as verified.", messages.SUCCESS)
 
 

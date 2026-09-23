@@ -378,7 +378,51 @@ class PortalAccessTests(TestCase):
         self.assertRedirects(response, reverse("account-settings"))
         self.member.refresh_from_db()
         self.assertEqual(self.member.first_name, "Updated")
-        self.assertEqual(self.member.phone_number, "0712345678")
+        self.assertEqual(self.member.phone_number, "+255712345678")
+
+    def test_registration_waits_for_admin_approval_before_login(self):
+        registration = {
+            "username": "pending-new-member",
+            "first_name": "Pending",
+            "last_name": "Member",
+            "email": "pending@example.com",
+            "phone_number_0": "TZ",
+            "phone_number_1": "0712 345 678",
+            "gender": Person.Gender.FEMALE,
+            "password1": "Strong-pass-12345",
+            "password2": "Strong-pass-12345",
+        }
+
+        response = self.client.post(reverse("member-register"), registration)
+
+        self.assertRedirects(response, reverse("login"))
+        user = User.objects.get(username="pending-new-member")
+        self.assertFalse(user.is_verified_member)
+        self.assertEqual(user.phone_number, "+255712345678")
+        self.assertNotIn("_auth_user_id", self.client.session)
+
+        response = self.client.post(
+            reverse("login"),
+            {"username": "pending-new-member", "password": "Strong-pass-12345"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "awaiting administrator approval")
+        self.assertNotIn("_auth_user_id", self.client.session)
+
+        self.client.login(username="admin", password="pass12345")
+        self.client.post(
+            reverse("management-pending"),
+            {"model": "person", "object_id": user.person_profile.pk, "action": "approve"},
+        )
+        user.refresh_from_db()
+        self.assertTrue(user.is_verified_member)
+
+        self.client.logout()
+        response = self.client.post(
+            reverse("login"),
+            {"username": "pending-new-member", "password": "Strong-pass-12345"},
+        )
+        self.assertRedirects(response, reverse("dashboard"))
 
     def test_member_can_upload_profile_picture_without_linked_person(self):
         self.client.login(username="member", password="pass12345")
