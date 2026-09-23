@@ -5,17 +5,18 @@
 {% block content %}
 <section class="page-title">
   <div>
+    <p class="section-translation">Usimamizi wa wana ukoo</p>
     <h1>Manage Members</h1>
-    <p class="muted">Add, search, edit, approve, archive, or delete clan member records.</p>
+    <p class="muted">Create, find, and maintain clan records.</p>
   </div>
-  <a class="button" href="{% url 'management-member-add' %}"><i data-lucide="user-plus" aria-hidden="true"></i>Add Member</a>
+  <a class="button" href="{% url 'management-member-add' %}" title="Ongeza mwana ukoo"><i data-lucide="user-plus" aria-hidden="true"></i>Add Member</a>
 </section>
 
 <section class="card bulk-import-panel">
   <div>
     <span class="bulk-step">1</span>
-    <h2>Download Excel Template</h2>
-    <p class="muted">Use the formatted template and keep its column headings unchanged.</p>
+    <h2>Download Template <small>Pakua kiolezo</small></h2>
+    <p class="muted">Start with a blank workbook or example records.</p>
     <div class="action-group">
       <a class="button button-secondary" href="{% url 'management-member-import-template' %}"><i data-lucide="file-spreadsheet" aria-hidden="true"></i>Blank Template</a>
       <a class="button" href="{% url 'management-member-import-sample' %}"><i data-lucide="download" aria-hidden="true"></i>Sample Data</a>
@@ -23,13 +24,13 @@
   </div>
   <div>
     <span class="bulk-step">2</span>
-    <h2>Upload Completed Template</h2>
-    <p class="muted">The full workbook is validated before any member records are created.</p>
+    <h2>Upload Workbook <small>Pakia faili</small></h2>
+    <p class="muted">Select a completed Excel file. It will be checked before import.</p>
     <form class="bulk-upload-form" method="post" action="{% url 'management-member-bulk-import' %}" enctype="multipart/form-data">
       {% csrf_token %}
       {{ bulk_import_form.workbook }}
       {{ bulk_import_form.workbook.errors }}
-      <button type="submit"><i data-lucide="upload" aria-hidden="true"></i>Import Members</button>
+      <button type="submit"><i data-lucide="upload" aria-hidden="true"></i>Import</button>
     </form>
   </div>
 </section>
@@ -44,10 +45,18 @@
   </section>
 {% endif %}
 
-<form class="search" method="get">
-  <input type="search" name="q" value="{{ query }}" placeholder="Search members" aria-label="Search members">
-  <button type="submit">Search</button>
-</form>
+<section class="directory-panel">
+  <div class="directory-heading">
+    <div>
+      <h2>Member Directory</h2>
+      <p class="muted">Orodha ya wana ukoo</p>
+    </div>
+  </div>
+  <form class="search" method="get">
+    <input type="search" name="q" value="{{ query }}" placeholder="Search by name or member ID" aria-label="Search members">
+    <button type="submit">Search</button>
+  </form>
+</section>
 
 <table class="member-management-table">
     <thead><tr><th>Member ID</th><th>Name</th><th>Status</th><th>Actions</th></tr></thead>

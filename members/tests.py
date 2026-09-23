@@ -591,7 +591,7 @@ class PortalAccessTests(TestCase):
         self.assertContains(response, "Location (Mahali)")
         self.assertContains(response, "Family Links (Mahusiano ya familia)")
         self.assertContains(response, "First name (Jina la kwanza)")
-        self.assertContains(response, "Namba ya mwanaukoo")
+        self.assertContains(response, "Namba ya mwana ukoo")
         self.assertNotContains(response, "mwanachama")
 
     def test_member_can_submit_relative_for_approval(self):

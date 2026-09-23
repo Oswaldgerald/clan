@@ -32,7 +32,7 @@ def residence_choices(current_value=""):
 
 
 FIELD_LABELS_SW = {
-    "member_id": "Member ID (Namba ya mwanaukoo)",
+    "member_id": "Member ID (Namba ya mwana ukoo)",
     "account": "Account (Akaunti)",
     "first_name": "First name (Jina la kwanza)",
     "middle_name": "Middle name (Jina la kati)",
@@ -380,8 +380,8 @@ class MemberRelationshipForm(RelationshipForm):
 class ExistingChildForm(forms.Form):
     child = forms.ModelChoiceField(
         queryset=Person.objects.none(),
-        label="Existing member (Mwanaukoo aliyepo)",
-        empty_label="Select a member (Chagua mwanaukoo)",
+        label="Existing member (Mwana ukoo aliyepo)",
+        empty_label="Select a member (Chagua mwana ukoo)",
     )
 
     def __init__(self, *args, parent, **kwargs):

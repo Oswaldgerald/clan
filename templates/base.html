@@ -243,6 +243,14 @@
     .page-title { display: flex; justify-content: space-between; gap: 20px; align-items: end; margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
     .page-title h1 { color: var(--navy); font-size: 32px; }
     .page-title p { margin: 7px 0 0; max-width: 720px; }
+    .page-title .section-translation {
+      margin: 0 0 5px;
+      color: var(--accent-dark);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
     .muted { color: var(--muted); }
     .grid { display: grid; gap: 14px; }
     .stats { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
@@ -595,6 +603,13 @@
     .bulk-import-panel > div { position: relative; padding: 20px; }
     .bulk-import-panel > div + div { border-left: 1px solid var(--line); }
     .bulk-import-panel h2 { font-size: 18px; margin: 0 0 6px 38px; }
+    .bulk-import-panel h2 small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
     .bulk-step {
       position: absolute;
       top: 17px;
