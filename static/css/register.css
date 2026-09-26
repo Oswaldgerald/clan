@@ -1,3 +1,7 @@
+.registration-page {
+  overflow-x: hidden;
+}
+
 .registration-page .app-shell {
   display: block;
   min-height: calc(100vh - 64px);
@@ -112,6 +116,10 @@
   min-width: 0;
 }
 
+.registration-field label {
+  overflow-wrap: anywhere;
+}
+
 .registration-field input,
 .registration-field select,
 .registration-field .select2-container {
@@ -179,7 +187,17 @@
   font-size: 13px;
 }
 
+@media (max-width: 900px) {
+  .registration-screen {
+    padding-top: 34px;
+  }
+}
+
 @media (max-width: 700px) {
+  .registration-page header {
+    position: relative;
+  }
+
   .registration-screen {
     width: min(100% - 24px, 560px);
     padding: 26px 0 40px;
@@ -187,6 +205,15 @@
 
   .registration-intro h1 {
     font-size: 28px;
+  }
+
+  .registration-intro > p:not(.section-translation) {
+    font-size: 15px;
+  }
+
+  .registration-notice {
+    align-items: flex-start;
+    text-align: left;
   }
 
   .registration-card-heading,
@@ -208,5 +235,84 @@
 
   .registration-field.field-phone_number.phone-input-group {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .registration-page header {
+    align-items: center;
+    padding: 9px 12px;
+  }
+
+  .registration-page .brand {
+    gap: 8px;
+  }
+
+  .registration-page .brand-mark {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+  }
+
+  .registration-page .brand-copy strong {
+    font-size: 13px;
+  }
+
+  .registration-page .user-nav {
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .registration-screen {
+    width: calc(100% - 16px);
+    padding: 20px 0 28px;
+  }
+
+  .registration-intro {
+    margin-bottom: 18px;
+  }
+
+  .registration-icon {
+    width: 42px;
+    height: 42px;
+    margin-bottom: 10px;
+  }
+
+  .registration-intro h1 {
+    font-size: 25px;
+  }
+
+  .registration-card-heading {
+    gap: 6px;
+    padding: 15px 16px;
+  }
+
+  .registration-form {
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .registration-actions {
+    width: 100%;
+    gap: 12px;
+  }
+
+  .registration-actions button {
+    width: 100%;
+  }
+
+  .registration-actions p {
+    width: 100%;
+    text-align: center;
+  }
+
+  .password-guidance {
+    line-height: 1.45;
+  }
+}
+
+@media (max-width: 360px) {
+  .registration-page .brand-copy {
+    display: none;
   }
 }
