@@ -1,5 +1,5 @@
 import tempfile
-from datetime import timedelta
+from datetime import date, timedelta
 from io import BytesIO
 
 from django.conf import settings
@@ -520,6 +520,59 @@ class PortalAccessTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Person.objects.filter(first_name="Juma", status=Status.VERIFIED).exists())
+
+    def test_active_member_report_only_includes_verified_living_members(self):
+        self.client.login(username="admin", password="pass12345")
+        active = Person.objects.create(
+            member_id="ACTIVE-001",
+            first_name="Active",
+            last_name="Member",
+            gender=Person.Gender.FEMALE,
+            date_of_birth=date(2000, 1, 1),
+            status=Status.VERIFIED,
+            is_living=True,
+        )
+        Person.objects.create(
+            member_id="INACTIVE-001",
+            first_name="Pending",
+            last_name="Member",
+            status=Status.SUBMITTED,
+            is_living=True,
+        )
+
+        response = self.client.get(reverse("management-active-member-report"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, active.full_name)
+        self.assertNotContains(response, "Pending Member")
+        self.assertEqual(response.context["summary"]["female"], 1)
+
+    def test_active_member_report_filters_by_gender_and_age(self):
+        self.client.login(username="admin", password="pass12345")
+        Person.objects.create(
+            member_id="REPORT-MALE",
+            first_name="Young",
+            last_name="Man",
+            gender=Person.Gender.MALE,
+            date_of_birth=date.today().replace(year=date.today().year - 20),
+            status=Status.VERIFIED,
+        )
+        Person.objects.create(
+            member_id="REPORT-FEMALE",
+            first_name="Older",
+            last_name="Woman",
+            gender=Person.Gender.FEMALE,
+            date_of_birth=date.today().replace(year=date.today().year - 40),
+            status=Status.VERIFIED,
+        )
+
+        response = self.client.get(
+            reverse("management-active-member-report"),
+            {"gender": "male", "age_group": "18_35"},
+        )
+
+        self.assertContains(response, "Young Man")
+        self.assertNotContains(response, "Older Woman")
 
     def test_staff_can_download_bulk_member_template(self):
         self.client.login(username="admin", password="pass12345")

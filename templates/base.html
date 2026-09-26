@@ -633,6 +633,21 @@
     .directory-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 12px; }
     .directory-heading h2 { color: var(--navy); font-size: 20px; }
     .directory-heading p { margin: 4px 0 0; font-size: 13px; }
+    .report-summary { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 18px; }
+    .report-summary .card { border-top: 3px solid var(--accent); }
+    .report-summary .card small { display: block; margin-top: 4px; color: var(--muted); }
+    .report-breakdown { display: grid; grid-template-columns: minmax(240px, .8fr) minmax(420px, 1.6fr); gap: 18px; margin-bottom: 18px; }
+    .report-panel { padding: 18px; }
+    .report-panel h2 { color: var(--navy); font-size: 18px; }
+    .report-panel > p { margin: 4px 0 16px; font-size: 12px; }
+    .report-bars { display: grid; gap: 12px; }
+    .report-bar-heading { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 5px; font-size: 13px; }
+    .report-bar-heading small { color: var(--muted); }
+    .report-bar-track { height: 8px; overflow: hidden; border-radius: 4px; background: var(--cloud); }
+    .report-bar-fill { height: 100%; border-radius: inherit; background: var(--accent); }
+    .report-table-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 22px 0 10px; }
+    .report-table-heading h2 { color: var(--navy); font-size: 20px; }
+    .report-table-heading p { margin: 4px 0 0; font-size: 13px; }
     .directory-search { width: min(100%, 620px); margin: 0 !important; }
     .search-field { position: relative; flex: 1; min-width: 240px; }
     .search-field svg { position: absolute; top: 50%; left: 13px; width: 18px; height: 18px; color: var(--muted); transform: translateY(-50%); pointer-events: none; }
@@ -868,6 +883,7 @@
       form.search { flex-direction: column; }
       .member-filters { grid-template-columns: 1fr; }
       .bulk-import-panel { grid-template-columns: 1fr; }
+      .report-summary, .report-breakdown { grid-template-columns: 1fr; }
       .bulk-import-panel > div + div { border-left: 0; border-top: 1px solid var(--line); }
       .bulk-upload-form { grid-template-columns: 1fr; }
       .directory-heading { align-items: stretch; flex-direction: column; }
@@ -972,6 +988,7 @@
           <div class="sidebar-links" id="sidebar-management">
             <a href="{% url 'management-dashboard' %}"><i data-lucide="gauge" aria-hidden="true"></i><span>Command Center</span></a>
             <a href="{% url 'management-members' %}"><i data-lucide="contact-round" aria-hidden="true"></i><span>Manage Members</span></a>
+            <a href="{% url 'management-active-member-report' %}"><i data-lucide="chart-no-axes-column-increasing" aria-hidden="true"></i><span>Member Reports</span></a>
             <a href="{% url 'management-relationships' %}"><i data-lucide="network" aria-hidden="true"></i><span>Manage Relationships</span></a>
             <a href="{% url 'management-pending' %}"><i data-lucide="shield-check" aria-hidden="true"></i><span>Verification Queue</span></a>
             <a href="{% url 'management-duplicates' %}"><i data-lucide="copy-check" aria-hidden="true"></i><span>Duplicate Review</span></a>

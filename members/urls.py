@@ -16,6 +16,7 @@ urlpatterns = [
     path("management/", management_views.command_center, name="management-dashboard"),
     path("management/clan-settings/", management_views.clan_settings, name="management-clan-settings"),
     path("management/members/", management_views.member_management, name="management-members"),
+    path("management/reports/active-members/", management_views.active_member_report, name="management-active-member-report"),
     path("management/members/add/", management_views.member_create, name="management-member-add"),
     path("management/members/import/template/", management_views.member_import_template, name="management-member-import-template"),
     path("management/members/import/sample/", management_views.member_import_sample, name="management-member-import-sample"),

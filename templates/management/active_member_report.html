@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Active Member Report - {{ clan_name }} Clan Registry{% endblock %}
+
+{% block content %}
+<section class="page-title">
+  <div>
+    <p class="section-translation">Ripoti ya wana ukoo hai</p>
+    <h1>Active Member Report</h1>
+    <p class="muted">Verified, living clan members grouped by age and gender.</p>
+  </div>
+  <button class="button button-secondary" type="button" onclick="window.print()"><i data-lucide="printer" aria-hidden="true"></i>Print Report</button>
+</section>
+
+<section class="grid report-summary" aria-label="Active member summary">
+  <article class="card"><span class="muted">Active Members</span><div class="stat-value">{{ summary.total }}</div><small>Wana ukoo hai</small></article>
+  <article class="card"><span class="muted">Male</span><div class="stat-value">{{ summary.male }}</div><small>Wanaume</small></article>
+  <article class="card"><span class="muted">Female</span><div class="stat-value">{{ summary.female }}</div><small>Wanawake</small></article>
+  <article class="card"><span class="muted">Gender Not Recorded</span><div class="stat-value">{{ summary.unknown_gender }}</div><small>Jinsia haijawekwa</small></article>
+</section>
+
+<section class="report-breakdown">
+  <article class="card report-panel">
+    <h2>Gender Breakdown</h2>
+    <p class="muted">Mgawanyo kwa jinsia</p>
+    <div class="report-bars">
+      <div>
+        <div class="report-bar-heading"><span>Male <small>(Wanaume)</small></span><strong>{{ summary.male }}</strong></div>
+        <div class="report-bar-track"><div class="report-bar-fill" style="width: {% widthratio summary.male summary.total 100 %}%"></div></div>
+      </div>
+      <div>
+        <div class="report-bar-heading"><span>Female <small>(Wanawake)</small></span><strong>{{ summary.female }}</strong></div>
+        <div class="report-bar-track"><div class="report-bar-fill" style="width: {% widthratio summary.female summary.total 100 %}%"></div></div>
+      </div>
+    </div>
+  </article>
+  <article class="card report-panel">
+    <h2>Age Breakdown</h2>
+    <p class="muted">Mgawanyo kwa umri</p>
+    <div class="report-bars">
+      {% for group in age_groups %}
+        <div>
+          <div class="report-bar-heading"><span>{{ group.label }} <small>({{ group.swahili }})</small></span><strong>{{ group.total }}</strong></div>
+          <div class="report-bar-track"><div class="report-bar-fill" style="width: {% widthratio group.total summary.total 100 %}%"></div></div>
+        </div>
+      {% endfor %}
+    </div>
+  </article>
+</section>
+
+<form class="member-filters" method="get">
+  <div>
+    <label for="report-search">Search <small>(Tafuta)</small></label>
+    <input id="report-search" type="search" name="q" value="{{ query }}" placeholder="Name or member ID">
+  </div>
+  <div>
+    <label for="report-gender">Gender <small>(Jinsia)</small></label>
+    <select id="report-gender" name="gender">
+      <option value="">All genders</option>
+      <option value="male" {% if gender_filter == "male" %}selected{% endif %}>Male</option>
+      <option value="female" {% if gender_filter == "female" %}selected{% endif %}>Female</option>
+    </select>
+  </div>
+  <div>
+    <label for="report-age">Age group <small>(Kundi la umri)</small></label>
+    <select id="report-age" name="age_group">
+      <option value="">All ages</option>
+      {% for group in age_groups %}<option value="{{ group.value }}" {% if age_group_filter == group.value %}selected{% endif %}>{{ group.label }}</option>{% endfor %}
+    </select>
+  </div>
+  <button class="filter-action" type="submit">Apply Filters</button>
+  <a class="button button-secondary filter-action" href="{% url 'management-active-member-report' %}">Clear</a>
+</form>
+
+<div class="report-table-heading">
+  <div><h2>Active Members</h2><p class="muted">{{ filtered_total }} record{{ filtered_total|pluralize }} found</p></div>
+</div>
+<table>
+  <thead><tr><th>Member ID</th><th>Name</th><th>Gender</th><th>Date of Birth</th><th>Age</th><th>Residence</th></tr></thead>
+  <tbody>
+    {% for member in members %}
+      <tr>
+        <td><span class="member-code">{{ member.member_id }}</span></td>
+        <td><a class="member-name" href="{{ member.get_absolute_url }}">{{ member.full_name }}</a></td>
+        <td>{{ member.get_gender_display|default:"Not recorded" }}</td>
+        <td>{{ member.date_of_birth|date:"d M Y"|default:"Not recorded" }}</td>
+        <td>{{ member.report_age|default_if_none:"-" }}</td>
+        <td>{{ member.current_residence|default:"Not recorded" }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="6" class="empty-state"><i data-lucide="search-x" aria-hidden="true"></i><span>No active members match these filters.</span></td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% include "partials/pagination.html" with page_obj=members pagination_query=pagination_query label="Active members" %}
+{% endblock %}
