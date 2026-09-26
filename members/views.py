@@ -1,5 +1,5 @@
 from django.db.models import Count, Q
-from django.http import JsonResponse
+from django.http import FileResponse, JsonResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -13,6 +13,7 @@ from .models import Person
 from .models import Relationship
 from .services.family_tree import build_family_tree, get_direct_children, get_spouses
 from .services.member_reports import active_member_report_context
+from .services.member_report_export import build_active_member_workbook
 
 
 LIST_PAGE_SIZE = 10
@@ -29,6 +30,18 @@ def dashboard(request):
         }
     )
     return render(request, "management/active_member_report.html", context)
+
+
+@login_required
+def active_member_export(request):
+    context = active_member_report_context(request, LIST_PAGE_SIZE)
+    workbook = build_active_member_workbook(context["filtered_members"])
+    return FileResponse(
+        workbook,
+        as_attachment=True,
+        filename="active_members.xlsx",
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
 
 
 def member_list(request):

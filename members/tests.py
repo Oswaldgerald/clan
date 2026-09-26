@@ -577,6 +577,35 @@ class PortalAccessTests(TestCase):
         self.assertContains(response, "Young Man")
         self.assertNotContains(response, "Older Woman")
 
+    def test_active_member_excel_export_uses_current_filters(self):
+        self.client.login(username="admin", password="pass12345")
+        Person.objects.create(
+            member_id="EXPORT-MALE",
+            first_name="Export",
+            last_name="Man",
+            gender=Person.Gender.MALE,
+            date_of_birth=date(1990, 5, 6),
+            status=Status.VERIFIED,
+        )
+        Person.objects.create(
+            member_id="EXPORT-FEMALE",
+            first_name="Export",
+            last_name="Woman",
+            gender=Person.Gender.FEMALE,
+            status=Status.VERIFIED,
+        )
+
+        response = self.client.get(reverse("active-member-export"), {"gender": "female"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("active_members.xlsx", response["Content-Disposition"])
+        workbook = load_workbook(BytesIO(b"".join(response.streaming_content)), read_only=True)
+        rows = list(workbook["Active Members"].iter_rows(values_only=True))
+        workbook.close()
+        self.assertEqual(rows[0], ("Member ID", "Name", "Gender", "Date of Birth", "Age", "Residence"))
+        self.assertIn("EXPORT-FEMALE", [row[0] for row in rows[1:]])
+        self.assertNotIn("EXPORT-MALE", [row[0] for row in rows[1:]])
+
     def test_staff_can_download_bulk_member_template(self):
         self.client.login(username="admin", password="pass12345")
 

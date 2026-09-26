@@ -245,6 +245,12 @@
       });
     }
 
+    function setupPrintButtons() {
+      document.querySelectorAll('[data-print-report]').forEach((button) => {
+        button.addEventListener('click', () => window.print());
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       setupPageLoader();
       setupDatePickers();
@@ -256,5 +262,6 @@
       setupSidebarSections();
       setupNavigation();
       setupResponsiveTables();
+      setupPrintButtons();
       if (window.lucide) lucide.createIcons();
     });

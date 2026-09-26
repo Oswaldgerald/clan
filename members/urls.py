@@ -5,6 +5,7 @@ from . import management_views
 
 urlpatterns = [
     path("", views.dashboard, name="dashboard"),
+    path("reports/active-members/export/", views.active_member_export, name="active-member-export"),
     path("members/", views.member_list, name="member-list"),
     path("members/<int:pk>/", views.person_detail, name="person-detail"),
     path("members/<int:pk>/add-child/", views.add_child, name="add-child"),
