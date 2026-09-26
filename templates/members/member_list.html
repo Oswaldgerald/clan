@@ -5,26 +5,32 @@
 {% block content %}
 <section class="page-title">
   <div>
+    <p class="section-translation">Orodha ya wana ukoo</p>
     <h1>Clan Members</h1>
-    <p class="muted">Search by name, member ID, residence, or occupation.</p>
+    <p class="muted">Find and review people recorded in the clan registry.</p>
   </div>
 </section>
 
 <section class="grid member-summary" aria-label="Member summary">
-  <article class="card"><span class="muted">Total Members</span><div class="stat-value">{{ stats.total }}</div></article>
-  <article class="card"><span class="muted">Male</span><div class="stat-value">{{ stats.male }}</div></article>
-  <article class="card"><span class="muted">Female</span><div class="stat-value">{{ stats.female }}</div></article>
-  <article class="card"><span class="muted">Living</span><div class="stat-value">{{ stats.living }}</div></article>
-  <article class="card"><span class="muted">Deceased</span><div class="stat-value">{{ stats.deceased }}</div></article>
+  <article class="card"><span class="muted">Total Members</span><div class="stat-value">{{ stats.total }}</div><small>Wana ukoo wote</small></article>
+  <article class="card"><span class="muted">Male</span><div class="stat-value">{{ stats.male }}</div><small>Wanaume</small></article>
+  <article class="card"><span class="muted">Female</span><div class="stat-value">{{ stats.female }}</div><small>Wanawake</small></article>
+  <article class="card"><span class="muted">Living</span><div class="stat-value">{{ stats.living }}</div><small>Walio hai</small></article>
+  <article class="card"><span class="muted">Deceased</span><div class="stat-value">{{ stats.deceased }}</div><small>Waliofariki</small></article>
 </section>
 
+<section class="card member-filter-panel">
+  <div class="member-filter-heading">
+    <div><h2>Find Members</h2><p class="muted">Tafuta wana ukoo</p></div>
+    <i data-lucide="list-filter" aria-hidden="true"></i>
+  </div>
 <form class="member-filters" method="get">
   <div>
-    <label for="member-search">Search</label>
+    <label for="member-search">Search <small>(Tafuta)</small></label>
     <input id="member-search" type="search" name="q" value="{{ query }}" placeholder="Name, member ID, residence, occupation">
   </div>
   <div>
-    <label for="gender-filter">Gender</label>
+    <label for="gender-filter">Gender <small>(Jinsia)</small></label>
     <select id="gender-filter" name="gender">
       <option value="">All genders</option>
       <option value="male" {% if gender_filter == "male" %}selected{% endif %}>Male</option>
@@ -32,7 +38,7 @@
     </select>
   </div>
   <div>
-    <label for="living-filter">Living status</label>
+    <label for="living-filter">Living status <small>(Hali ya uhai)</small></label>
     <select id="living-filter" name="living_status">
       <option value="">All statuses</option>
       <option value="living" {% if living_filter == "living" %}selected{% endif %}>Living</option>
@@ -40,7 +46,7 @@
     </select>
   </div>
   <div>
-    <label for="role-filter">Account role</label>
+    <label for="role-filter">Account role <small>(Jukumu)</small></label>
     <select id="role-filter" name="role">
       <option value="">All roles</option>
       {% for value, label in roles %}
@@ -48,11 +54,16 @@
       {% endfor %}
     </select>
   </div>
-  <button class="filter-action" type="submit">Apply Filters</button>
+  <button class="filter-action" type="submit"><i data-lucide="search" aria-hidden="true"></i>Apply</button>
   <a class="button button-secondary filter-action" href="{% url 'member-list' %}">Clear</a>
 </form>
+</section>
 
-<table>
+<div class="directory-heading member-directory-heading">
+  <div><h2>Member Directory</h2><p class="muted">{{ members.paginator.count }} record{{ members.paginator.count|pluralize }} found</p></div>
+</div>
+
+<table class="member-directory-table">
   <thead>
     <tr><th>Member ID</th><th>Name</th><th>Account Role</th><th>Gender</th><th>Life Status</th><th>Status</th></tr>
   </thead>
@@ -60,14 +71,17 @@
     {% for member in members %}
       <tr>
         <td><span class="member-code">{{ member.member_id }}</span></td>
-        <td><a class="member-name" href="{{ member.get_absolute_url }}">{{ member.full_name }}</a></td>
-        <td>{% if member.account %}{{ member.account.get_role_display }}{% else %}Clan record only{% endif %}</td>
+        <td><a class="member-identity" href="{{ member.get_absolute_url }}">
+          <span class="member-list-avatar">{% if member.profile_photo %}<img src="{{ member.profile_photo.url }}" alt="">{% else %}{{ member.first_name|slice:":1" }}{{ member.last_name|slice:":1" }}{% endif %}</span>
+          <span class="member-name">{{ member.full_name }}</span>
+        </a></td>
+        <td><span class="role-label">{% if member.account %}{{ member.account.get_role_display }}{% else %}Clan record only{% endif %}</span></td>
         <td>{{ member.get_gender_display|default:"-" }}</td>
-        <td>{% if member.is_living %}Living{% else %}Deceased{% endif %}</td>
+        <td><span class="life-badge {% if member.is_living %}is-living{% else %}is-deceased{% endif %}">{% if member.is_living %}Living{% else %}Deceased{% endif %}</span></td>
         <td><span class="status-badge status-{{ member.status }}">{{ member.get_status_display }}</span></td>
       </tr>
     {% empty %}
-      <tr><td colspan="6" class="muted">No members match the selected filters.</td></tr>
+      <tr><td colspan="6" class="empty-state"><i data-lucide="search-x" aria-hidden="true"></i><span>No members match the selected filters.</span></td></tr>
     {% endfor %}
   </tbody>
 </table>
