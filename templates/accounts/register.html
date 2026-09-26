@@ -23,57 +23,20 @@
     <form method="post" class="registration-form">
       {% csrf_token %}
       {{ form.non_field_errors }}
-
-      <fieldset class="registration-group">
-        <legend><span>1</span><strong>Personal Information</strong><small>Taarifa binafsi</small></legend>
-        <div class="registration-group-grid">
-          {% for field in form %}
-            {% if field.name == "first_name" or field.name == "last_name" or field.name == "gender" %}
-              <div class="registration-field field-{{ field.name }}">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {{ field.errors }}
-              </div>
-            {% endif %}
-          {% endfor %}
+      {% for field in form %}
+        <div class="registration-field field-{{ field.name }}">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text and field.name != "password1" %}<p class="field-help">{{ field.help_text|safe }}</p>{% endif %}
+          {{ field.errors }}
         </div>
-      </fieldset>
-
-      <fieldset class="registration-group">
-        <legend><span>2</span><strong>Contact Information</strong><small>Mawasiliano</small></legend>
-        <div class="registration-group-grid">
-          {% for field in form %}
-            {% if field.name == "email" or field.name == "phone_number" %}
-              <div class="registration-field field-{{ field.name }}">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% if field.help_text %}<p class="field-help">{{ field.help_text|safe }}</p>{% endif %}
-                {{ field.errors }}
-              </div>
-            {% endif %}
-          {% endfor %}
-        </div>
-      </fieldset>
-
-      <fieldset class="registration-group">
-        <legend><span>3</span><strong>Login Details</strong><small>Taarifa za kuingia</small></legend>
-        <div class="registration-group-grid">
-          {% for field in form %}
-            {% if field.name == "username" or field.name == "password1" or field.name == "password2" %}
-              <div class="registration-field field-{{ field.name }}">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% if field.name == "username" and field.help_text %}<p class="field-help">{{ field.help_text|safe }}</p>{% endif %}
-                {{ field.errors }}
-              </div>
-            {% endif %}
-          {% endfor %}
+        {% if field.name == "password2" %}
           <div class="password-guidance">
             <i data-lucide="shield-check" aria-hidden="true"></i>
             <span>Use at least 8 characters. Avoid a common, entirely numeric password or one too similar to your personal details.</span>
           </div>
-        </div>
-      </fieldset>
+        {% endif %}
+      {% endfor %}
 
       <div class="registration-actions">
         <button type="submit"><i data-lucide="send" aria-hidden="true"></i>Submit Registration</button>
