@@ -27,6 +27,7 @@ admin.site.index_title = "Registry management"
 urlpatterns = [
     path('admin/management/', management_views.command_center, name='admin-management-dashboard'),
     path('admin/management/members/', management_views.member_management, name='admin-management-members'),
+    path('admin/management/reports/active-members/', management_views.active_member_report, name='admin-management-active-member-report'),
     path('admin/management/relationships/', management_views.relationship_management, name='admin-management-relationships'),
     path('admin/management/pending/', management_views.pending_verification, name='admin-management-pending'),
     path('admin/management/duplicates/', management_views.duplicate_review, name='admin-management-duplicates'),

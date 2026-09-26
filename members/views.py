@@ -1,5 +1,5 @@
 from django.db.models import Count, Q
-from django.http import JsonResponse
+from django.http import FileResponse, JsonResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -9,9 +9,11 @@ from config.choices import Status
 from accounts.models import User
 
 from .forms import ExistingChildForm, MemberRelationshipForm, MemberRelativeForm
-from .models import Announcement, Person
+from .models import Person
 from .models import Relationship
 from .services.family_tree import build_family_tree, get_direct_children, get_spouses
+from .services.member_reports import active_member_report_context
+from .services.member_list_export import build_member_list_workbook
 
 
 LIST_PAGE_SIZE = 10
@@ -19,38 +21,23 @@ LIST_PAGE_SIZE = 10
 
 @login_required
 def dashboard(request):
-    stats = {
-        "total_members": Person.objects.count(),
-        "living_members": Person.objects.filter(is_living=True).count(),
-        "deceased_members": Person.objects.filter(is_living=False).count(),
-    }
-    recent_members = Person.objects.order_by("-created_at")[:8]
-    recent_announcements = Announcement.objects.order_by("-published_at")[:5]
-    return render(
-        request,
-        "members/dashboard.html",
+    context = active_member_report_context(request, LIST_PAGE_SIZE)
+    context.update(
         {
-            "stats": stats,
-            "recent_members": recent_members,
-            "recent_announcements": recent_announcements,
-        },
+            "report_heading": "Clan Dashboard",
+            "report_translation": "Dashibodi ya ukoo",
+            "report_url_name": "dashboard",
+        }
     )
+    return render(request, "management/active_member_report.html", context)
 
 
-def member_list(request):
+def filtered_member_list(request):
     query = request.GET.get("q", "").strip()
     gender = request.GET.get("gender", "").strip()
     living_status = request.GET.get("living_status", "living").strip()
     role = request.GET.get("role", "").strip()
-    base_members = Person.objects.all()
-    stats = base_members.aggregate(
-        total=Count("id"),
-        male=Count("id", filter=Q(gender=Person.Gender.MALE)),
-        female=Count("id", filter=Q(gender=Person.Gender.FEMALE)),
-        living=Count("id", filter=Q(is_living=True)),
-        deceased=Count("id", filter=Q(is_living=False)),
-    )
-    members = base_members.select_related("account").order_by("last_name", "first_name")
+    members = Person.objects.select_related("account").order_by("last_name", "first_name")
     if query:
         members = members.filter(
             Q(first_name__icontains=query)
@@ -66,6 +53,19 @@ def member_list(request):
         members = members.filter(is_living=living_status == "living")
     if role in User.Role.values:
         members = members.filter(account__role=role)
+    return members, query, gender, living_status, role
+
+
+def member_list(request):
+    base_members = Person.objects.all()
+    stats = base_members.aggregate(
+        total=Count("id"),
+        male=Count("id", filter=Q(gender=Person.Gender.MALE)),
+        female=Count("id", filter=Q(gender=Person.Gender.FEMALE)),
+        living=Count("id", filter=Q(is_living=True)),
+        deceased=Count("id", filter=Q(is_living=False)),
+    )
+    members, query, gender, living_status, role = filtered_member_list(request)
 
     return render(
         request,
@@ -80,6 +80,18 @@ def member_list(request):
             "roles": User.Role.choices,
             "pagination_query": query_without(request, "page"),
         },
+    )
+
+
+@login_required
+def active_member_export(request):
+    context = active_member_report_context(request, LIST_PAGE_SIZE)
+    workbook = build_member_list_workbook(context["filtered_members"])
+    return FileResponse(
+        workbook,
+        as_attachment=True,
+        filename="active_members.xls",
+        content_type="application/vnd.ms-excel",
     )
 
 

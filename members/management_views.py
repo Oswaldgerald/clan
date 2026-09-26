@@ -22,6 +22,8 @@ from .forms import BulkMemberImportForm, PersonForm, RelationshipForm
 from .models import CorrectionRequest, Marriage, Person, Relationship
 from .services.bulk_import import import_members_from_workbook
 from .services.family_tree import build_family_tree
+from .services.member_list_export import build_member_list_workbook
+from .services.member_reports import active_member_report_context
 from .services.relationships import synchronize_parent_relationship
 from .views import LIST_PAGE_SIZE, query_without
 
@@ -61,16 +63,7 @@ def command_center(request):
 
 @staff_member_required
 def member_management(request):
-    query = request.GET.get("q", "").strip()
-    members = Person.objects.select_related("created_by").order_by("-created_at")
-    if query:
-        members = members.filter(
-            Q(member_id__icontains=query)
-            | Q(first_name__icontains=query)
-            | Q(last_name__icontains=query)
-            | Q(phone_number__icontains=query)
-            | Q(email__icontains=query)
-        )
+    members, query = management_member_queryset(request)
     return render(
         request,
         "management/member_management.html",
@@ -81,6 +74,39 @@ def member_management(request):
             "pagination_query": query_without(request, "page"),
         },
     )
+
+
+def management_member_queryset(request):
+    query = request.GET.get("q", "").strip()
+    members = Person.objects.select_related("created_by", "account").order_by("-created_at")
+    if query:
+        members = members.filter(
+            Q(member_id__icontains=query)
+            | Q(first_name__icontains=query)
+            | Q(last_name__icontains=query)
+            | Q(phone_number__icontains=query)
+            | Q(email__icontains=query)
+        )
+    return members, query
+
+
+@staff_member_required
+def management_member_export(request):
+    members, _ = management_member_queryset(request)
+    workbook = build_member_list_workbook(list(members))
+    return FileResponse(
+        workbook,
+        as_attachment=True,
+        filename="managed_members.xls",
+        content_type="application/vnd.ms-excel",
+    )
+
+
+@staff_member_required
+def active_member_report(request):
+    context = active_member_report_context(request, LIST_PAGE_SIZE)
+    context["report_url_name"] = "management-active-member-report"
+    return render(request, "management/active_member_report.html", context)
 
 
 @staff_member_required
@@ -121,31 +147,33 @@ def member_bulk_import(request):
 
     form = BulkMemberImportForm(request.POST, request.FILES)
     if not form.is_valid():
-        members = Person.objects.select_related("created_by").order_by("-created_at")
+        members, query = management_member_queryset(request)
         return render(
             request,
             "management/member_management.html",
             {
                 "members": Paginator(members, LIST_PAGE_SIZE).get_page(1),
-                "query": "",
+                "query": query,
                 "bulk_import_form": form,
                 "pagination_query": "",
+                "show_import_panel": True,
             },
             status=400,
         )
 
     imported, import_errors = import_members_from_workbook(form.cleaned_data["workbook"], request.user)
     if import_errors:
-        members = Person.objects.select_related("created_by").order_by("-created_at")
+        members, query = management_member_queryset(request)
         return render(
             request,
             "management/member_management.html",
             {
                 "members": Paginator(members, LIST_PAGE_SIZE).get_page(1),
-                "query": "",
+                "query": query,
                 "bulk_import_form": form,
                 "import_errors": import_errors,
                 "pagination_query": "",
+                "show_import_panel": True,
             },
             status=400,
         )

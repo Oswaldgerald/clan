@@ -3,92 +3,9 @@
 
 {% block title %}Member Login - {{ clan_name }} Clan Registry{% endblock %}
 {% block body_class %}login-page{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/login.css' %}">{% endblock %}
 
 {% block content %}
-<style>
-  .login-page .app-shell {
-    display: block;
-    min-height: calc(100vh - 64px);
-  }
-  .login-page .sidebar {
-    display: none;
-  }
-  .login-page main {
-    width: 100%;
-    margin: 0;
-  }
-  .login-screen {
-    min-height: calc(100vh - 64px);
-    display: grid;
-    place-items: center;
-    padding: 40px 20px;
-    position: relative;
-    isolation: isolate;
-    background-image:
-      linear-gradient(rgba(8, 35, 36, .28), rgba(8, 35, 36, .42)),
-      url("{% static 'images/moshi-login-background.png' %}");
-    background-size: cover;
-    background-position: center;
-  }
-  .login-screen::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: radial-gradient(circle at center, transparent 20%, rgba(8, 28, 30, .18) 100%);
-  }
-  .login-panel {
-    width: min(100%, 460px);
-    padding: 30px;
-    border: 1px solid rgba(255, 255, 255, .72);
-    background: rgba(255, 255, 255, .94);
-    box-shadow: 0 24px 60px rgba(4, 24, 26, .3);
-    backdrop-filter: blur(10px);
-    border-radius: 8px;
-  }
-  .login-heading {
-    margin-bottom: 24px;
-    text-align: center;
-  }
-  .login-heading h1 {
-    font-size: 30px;
-    color: #244f73;
-  }
-  .login-heading p {
-    max-width: 340px;
-    margin: 9px auto 0;
-  }
-  .login-form {
-    grid-template-columns: 1fr;
-    gap: 17px;
-  }
-  .login-form > button {
-    width: 100%;
-    min-height: 48px;
-    margin-top: 3px;
-  }
-  .login-register {
-    margin: 20px 0 0;
-    padding-top: 18px;
-    border-top: 1px solid var(--line);
-    text-align: center;
-    font-size: 14px;
-  }
-  @media (max-width: 520px) {
-    .login-screen {
-      place-items: center;
-      padding: 24px 14px;
-      background-position: 58% center;
-    }
-    .login-panel {
-      padding: 24px 20px;
-    }
-    .login-heading h1 {
-      font-size: 26px;
-    }
-  }
-</style>
-
 <section class="login-screen">
   <div class="card login-panel">
     <div class="login-heading">

@@ -6,6 +6,7 @@ from . import management_views
 urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path("members/", views.member_list, name="member-list"),
+    path("reports/active-members/export/", views.active_member_export, name="active-member-export"),
     path("members/<int:pk>/", views.person_detail, name="person-detail"),
     path("members/<int:pk>/add-child/", views.add_child, name="add-child"),
     path("submit/relative/", views.submit_relative, name="submit-relative"),
@@ -16,6 +17,8 @@ urlpatterns = [
     path("management/", management_views.command_center, name="management-dashboard"),
     path("management/clan-settings/", management_views.clan_settings, name="management-clan-settings"),
     path("management/members/", management_views.member_management, name="management-members"),
+    path("management/members/export/", management_views.management_member_export, name="management-member-export"),
+    path("management/reports/active-members/", management_views.active_member_report, name="management-active-member-report"),
     path("management/members/add/", management_views.member_create, name="management-member-add"),
     path("management/members/import/template/", management_views.member_import_template, name="management-member-import-template"),
     path("management/members/import/sample/", management_views.member_import_sample, name="management-member-import-sample"),
