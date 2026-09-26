@@ -22,6 +22,14 @@ from .services.family_tree import build_family_tree
 
 
 class DashboardAccessTests(TestCase):
+    def test_anonymous_pages_do_not_render_sidebar_navigation(self):
+        login_response = self.client.get(reverse("login"))
+        member_list_response = self.client.get(reverse("member-list"))
+
+        self.assertNotContains(login_response, '<aside class="sidebar">', html=False)
+        self.assertNotContains(member_list_response, '<aside class="sidebar">', html=False)
+        self.assertNotContains(member_list_response, "Clan Portal")
+
     def test_anonymous_visitor_is_redirected_to_login(self):
         response = self.client.get(reverse("dashboard"))
 

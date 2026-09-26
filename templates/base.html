@@ -23,9 +23,11 @@
       <span class="brand-copy"><strong>{{ clan_name }} Clan Registry</strong><small>Family records and heritage</small></span>
     </a>
     <nav class="user-nav">
-      <button class="mobile-nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-mobile-nav-toggle>
-        <i data-lucide="menu" aria-hidden="true"></i>
-      </button>
+      {% if request.user.is_authenticated %}
+        <button class="mobile-nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-mobile-nav-toggle>
+          <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+      {% endif %}
       {% if request.user.is_authenticated %}
         <div class="account-menu" data-account-menu>
           <button class="user-identity" type="button" aria-haspopup="true" aria-expanded="false" data-account-menu-button>
@@ -56,7 +58,8 @@
       {% endif %}
     </nav>
   </header>
-  <div class="app-shell">
+  <div class="app-shell{% if not request.user.is_authenticated %} no-sidebar{% endif %}">
+    {% if request.user.is_authenticated %}
     <aside class="sidebar">
       <section class="sidebar-section" data-sidebar-section="portal">
         <button class="sidebar-heading" type="button" aria-expanded="true" aria-controls="sidebar-portal">
@@ -68,18 +71,16 @@
           <a href="{% url 'family-tree' %}"><i data-lucide="git-fork" aria-hidden="true"></i><span>Family Tree</span></a>
         </div>
       </section>
-      {% if request.user.is_authenticated %}
-        <section class="sidebar-section" data-sidebar-section="member">
-          <button class="sidebar-heading" type="button" aria-expanded="true" aria-controls="sidebar-member">
-            <span>Member</span><i class="sidebar-chevron" data-lucide="chevron-down" aria-hidden="true"></i>
-          </button>
-          <div class="sidebar-links" id="sidebar-member">
-            <a href="{% url 'submit-relative' %}"><i data-lucide="user-plus" aria-hidden="true"></i><span>Submit Relative</span></a>
-            <a href="{% url 'submit-relationship' %}"><i data-lucide="link" aria-hidden="true"></i><span>Submit Relationship</span></a>
-            <a href="{% url 'member-submissions' %}"><i data-lucide="clipboard-list" aria-hidden="true"></i><span>My Submissions</span></a>
-          </div>
-        </section>
-      {% endif %}
+      <section class="sidebar-section" data-sidebar-section="member">
+        <button class="sidebar-heading" type="button" aria-expanded="true" aria-controls="sidebar-member">
+          <span>Member</span><i class="sidebar-chevron" data-lucide="chevron-down" aria-hidden="true"></i>
+        </button>
+        <div class="sidebar-links" id="sidebar-member">
+          <a href="{% url 'submit-relative' %}"><i data-lucide="user-plus" aria-hidden="true"></i><span>Submit Relative</span></a>
+          <a href="{% url 'submit-relationship' %}"><i data-lucide="link" aria-hidden="true"></i><span>Submit Relationship</span></a>
+          <a href="{% url 'member-submissions' %}"><i data-lucide="clipboard-list" aria-hidden="true"></i><span>My Submissions</span></a>
+        </div>
+      </section>
       {% if request.user.is_staff %}
         <section class="sidebar-section" data-sidebar-section="management">
           <button class="sidebar-heading" type="button" aria-expanded="true" aria-controls="sidebar-management">
@@ -98,6 +99,7 @@
         </section>
       {% endif %}
     </aside>
+    {% endif %}
     <main>
       {% if messages %}
         <div class="messages">
