@@ -1,9 +1,14 @@
+.git
+.gitignore
+.vscode
+.env
+.env.*
 venv/
 __pycache__/
 *.py[cod]
 db.sqlite3
-.env
 media/
 staticfiles/
 .DS_Store
-deploy.sh
+docker-compose*.yml
+README.md

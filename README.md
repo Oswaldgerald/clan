@@ -42,6 +42,30 @@ venv/bin/python manage.py runserver
 Open `http://127.0.0.1:8000/` for the dashboard and `http://127.0.0.1:8000/admin/` for administration.
 PostgreSQL must be running and the database named in `POSTGRES_DB` must already exist.
 
+## Docker Deployment
+
+The Docker stack runs three services: `db` (PostgreSQL 16), `web` (Django on Gunicorn) and `nginx` (reverse proxy that serves `/static/` and `/media/`). Database, static and uploaded files are stored in named volumes.
+
+```bash
+cp .env.example .env
+# Set DJANGO_SECRET_KEY, POSTGRES_PASSWORD, DJANGO_ALLOWED_HOSTS (your domain)
+# and DJANGO_CSRF_TRUSTED_ORIGINS (e.g. https://clan.example.com).
+docker compose up -d --build
+docker compose exec web python manage.py createsuperuser
+```
+
+The site is served on port 80 (change it with `HTTP_PORT`). Migrations and `collectstatic` run automatically each time the `web` container starts. Compose sets `DJANGO_DEBUG=False` and `POSTGRES_HOST=db` for the container, whatever `.env` says.
+
+For HTTPS, put a TLS-terminating proxy or load balancer in front of nginx that sets `X-Forwarded-Proto: https`, then set `DJANGO_SECURE_COOKIES=True`.
+
+Useful commands:
+
+```bash
+docker compose logs -f web
+docker compose exec db pg_dump -U postgres clan > backup.sql
+docker compose down        # stop (keeps data volumes)
+```
+
 ## Current Foundation
 
 The initial models cover the document's proposed entities:
