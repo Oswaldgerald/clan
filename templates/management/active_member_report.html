@@ -10,7 +10,6 @@
     <p class="muted">Verified, living clan members grouped by age and gender.</p>
   </div>
   <div class="action-group">
-    <a class="button" href="{% url 'active-member-export' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}" download><i data-lucide="file-spreadsheet" aria-hidden="true"></i>Export Excel</a>
     <button class="button button-secondary" type="button" data-print-report><i data-lucide="printer" aria-hidden="true"></i>Print Report</button>
   </div>
 </section>

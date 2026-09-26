@@ -67,7 +67,6 @@ def active_member_report_context(request, page_size):
     pagination_query.pop("page", None)
     return {
         "members": Paginator(filtered_members, page_size).get_page(request.GET.get("page")),
-        "filtered_members": filtered_members,
         "summary": summary,
         "age_groups": age_groups,
         "query": query,

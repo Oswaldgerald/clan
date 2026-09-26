@@ -66,22 +66,6 @@ FIELD_LABELS_SW = {
 }
 
 
-class BulkMemberImportForm(forms.Form):
-    workbook = forms.FileField(
-        label="Completed Excel template",
-        widget=forms.ClearableFileInput(attrs={"accept": ".xlsx"}),
-        help_text="Upload the completed .xlsx template. Maximum file size: 5 MB.",
-    )
-
-    def clean_workbook(self):
-        workbook = self.cleaned_data["workbook"]
-        if not workbook.name.lower().endswith(".xlsx"):
-            raise forms.ValidationError("Please upload an Excel .xlsx file.")
-        if workbook.size > 5 * 1024 * 1024:
-            raise forms.ValidationError("The workbook must be 5 MB or smaller.")
-        return workbook
-
-
 class PersonForm(forms.ModelForm):
     phone_number = international_phone_field(
         label="Phone number (Namba ya simu)",

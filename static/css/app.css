@@ -583,43 +583,6 @@
     }
     .page-link:hover { background: var(--cloud); text-decoration: none; }
     .page-link.is-current { border-color: var(--accent); background: var(--accent); color: #fff; }
-    .bulk-import-panel {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0;
-      margin-bottom: 18px;
-      padding: 0;
-      overflow: hidden;
-    }
-    .bulk-import-panel > div { position: relative; padding: 20px; }
-    .bulk-import-panel > div + div { border-left: 1px solid var(--line); }
-    .bulk-import-panel h2 { font-size: 18px; margin: 0 0 6px 38px; }
-    .bulk-import-panel h2 small {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .bulk-step {
-      position: absolute;
-      top: 17px;
-      left: 20px;
-      width: 28px;
-      height: 28px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: var(--cloud-strong);
-      color: var(--accent-dark);
-      font-weight: 700;
-    }
-    .bulk-import-panel > div:first-child { background: #fbfdff; }
-    .bulk-import-panel p { margin: 8px 0 16px 38px; }
-    .bulk-import-panel .action-group { margin-left: 38px; }
-    .bulk-upload-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: start; margin-top: 14px; }
-    .bulk-upload-form .errorlist { grid-column: 1 / -1; }
-    .bulk-upload-form button { min-height: 48px; }
     .directory-panel { margin-top: 20px; }
     .directory-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 12px; }
     .directory-heading h2 { color: var(--navy); font-size: 20px; }
@@ -651,7 +614,7 @@
     .status-rejected { background: #fff0ef; color: #9f2f28; }
     .status-archived { background: #eef0f2; color: #56636b; }
     .row-actions { flex-wrap: nowrap; }
-    .row-actions .button svg, .page-title .button svg, .bulk-import-panel .button svg { width: 16px; height: 16px; }
+    .row-actions .button svg, .page-title .button svg { width: 16px; height: 16px; }
     .empty-state { padding: 36px !important; text-align: center; color: var(--muted); }
     .empty-state svg { width: 24px; height: 24px; margin-right: 8px; vertical-align: middle; }
     .verification-section { margin-bottom: 18px; padding: 0; overflow: hidden; }
@@ -873,10 +836,7 @@
       .form-section { padding: 14px; }
       form.search { flex-direction: column; }
       .member-filters { grid-template-columns: 1fr; }
-      .bulk-import-panel { grid-template-columns: 1fr; }
       .report-summary, .report-breakdown { grid-template-columns: 1fr; }
-      .bulk-import-panel > div + div { border-left: 0; border-top: 1px solid var(--line); }
-      .bulk-upload-form { grid-template-columns: 1fr; }
       .directory-heading { align-items: stretch; flex-direction: column; }
       .directory-search { width: 100%; }
       .row-actions { flex-wrap: wrap; }

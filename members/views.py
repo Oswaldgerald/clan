@@ -13,7 +13,7 @@ from .models import Person
 from .models import Relationship
 from .services.family_tree import build_family_tree, get_direct_children, get_spouses
 from .services.member_reports import active_member_report_context
-from .services.member_report_export import build_active_member_workbook
+from .services.member_list_export import build_member_list_workbook
 
 
 LIST_PAGE_SIZE = 10
@@ -32,32 +32,12 @@ def dashboard(request):
     return render(request, "management/active_member_report.html", context)
 
 
-@login_required
-def active_member_export(request):
-    context = active_member_report_context(request, LIST_PAGE_SIZE)
-    workbook = build_active_member_workbook(context["filtered_members"])
-    return FileResponse(
-        workbook,
-        as_attachment=True,
-        filename="active_members.xlsx",
-        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    )
-
-
-def member_list(request):
+def filtered_member_list(request):
     query = request.GET.get("q", "").strip()
     gender = request.GET.get("gender", "").strip()
     living_status = request.GET.get("living_status", "living").strip()
     role = request.GET.get("role", "").strip()
-    base_members = Person.objects.all()
-    stats = base_members.aggregate(
-        total=Count("id"),
-        male=Count("id", filter=Q(gender=Person.Gender.MALE)),
-        female=Count("id", filter=Q(gender=Person.Gender.FEMALE)),
-        living=Count("id", filter=Q(is_living=True)),
-        deceased=Count("id", filter=Q(is_living=False)),
-    )
-    members = base_members.select_related("account").order_by("last_name", "first_name")
+    members = Person.objects.select_related("account").order_by("last_name", "first_name")
     if query:
         members = members.filter(
             Q(first_name__icontains=query)
@@ -73,6 +53,19 @@ def member_list(request):
         members = members.filter(is_living=living_status == "living")
     if role in User.Role.values:
         members = members.filter(account__role=role)
+    return members, query, gender, living_status, role
+
+
+def member_list(request):
+    base_members = Person.objects.all()
+    stats = base_members.aggregate(
+        total=Count("id"),
+        male=Count("id", filter=Q(gender=Person.Gender.MALE)),
+        female=Count("id", filter=Q(gender=Person.Gender.FEMALE)),
+        living=Count("id", filter=Q(is_living=True)),
+        deceased=Count("id", filter=Q(is_living=False)),
+    )
+    members, query, gender, living_status, role = filtered_member_list(request)
 
     return render(
         request,
@@ -87,6 +80,18 @@ def member_list(request):
             "roles": User.Role.choices,
             "pagination_query": query_without(request, "page"),
         },
+    )
+
+
+@login_required
+def member_list_export(request):
+    members, _, _, _, _ = filtered_member_list(request)
+    workbook = build_member_list_workbook(list(members))
+    return FileResponse(
+        workbook,
+        as_attachment=True,
+        filename="clan_members.xls",
+        content_type="application/vnd.ms-excel",
     )
 
 

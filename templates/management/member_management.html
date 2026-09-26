@@ -12,39 +12,6 @@
   <a class="button" href="{% url 'management-member-add' %}" title="Ongeza mwana ukoo"><i data-lucide="user-plus" aria-hidden="true"></i>Add Member</a>
 </section>
 
-<section class="card bulk-import-panel">
-  <div>
-    <span class="bulk-step">1</span>
-    <h2>Download Template <small>Pakua kiolezo</small></h2>
-    <p class="muted">Start with a blank workbook or example records.</p>
-    <div class="action-group">
-      <a class="button button-secondary" href="{% url 'management-member-import-template' %}"><i data-lucide="file-spreadsheet" aria-hidden="true"></i>Blank Template</a>
-      <a class="button" href="{% url 'management-member-import-sample' %}"><i data-lucide="download" aria-hidden="true"></i>Sample Data</a>
-    </div>
-  </div>
-  <div>
-    <span class="bulk-step">2</span>
-    <h2>Upload Workbook <small>Pakia faili</small></h2>
-    <p class="muted">Select a completed Excel file. It will be checked before import.</p>
-    <form class="bulk-upload-form" method="post" action="{% url 'management-member-bulk-import' %}" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ bulk_import_form.workbook }}
-      {{ bulk_import_form.workbook.errors }}
-      <button type="submit"><i data-lucide="upload" aria-hidden="true"></i>Import</button>
-    </form>
-  </div>
-</section>
-
-{% if import_errors %}
-  <section class="card import-errors">
-    <h2>Import could not be completed</h2>
-    <p>Correct the following rows and upload the workbook again. No members were created.</p>
-    <ul>
-      {% for error in import_errors %}<li>{{ error }}</li>{% endfor %}
-    </ul>
-  </section>
-{% endif %}
-
 <section class="directory-panel">
   <div class="directory-heading">
     <div>

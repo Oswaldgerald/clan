@@ -5,8 +5,8 @@ from . import management_views
 
 urlpatterns = [
     path("", views.dashboard, name="dashboard"),
-    path("reports/active-members/export/", views.active_member_export, name="active-member-export"),
     path("members/", views.member_list, name="member-list"),
+    path("members/export/", views.member_list_export, name="member-list-export"),
     path("members/<int:pk>/", views.person_detail, name="person-detail"),
     path("members/<int:pk>/add-child/", views.add_child, name="add-child"),
     path("submit/relative/", views.submit_relative, name="submit-relative"),
@@ -19,9 +19,6 @@ urlpatterns = [
     path("management/members/", management_views.member_management, name="management-members"),
     path("management/reports/active-members/", management_views.active_member_report, name="management-active-member-report"),
     path("management/members/add/", management_views.member_create, name="management-member-add"),
-    path("management/members/import/template/", management_views.member_import_template, name="management-member-import-template"),
-    path("management/members/import/sample/", management_views.member_import_sample, name="management-member-import-sample"),
-    path("management/members/import/", management_views.member_bulk_import, name="management-member-bulk-import"),
     path("management/members/<int:pk>/edit/", management_views.member_update, name="management-member-edit"),
     path("management/members/<int:pk>/delete/", management_views.member_delete, name="management-member-delete"),
     path("management/relationships/", management_views.relationship_management, name="management-relationships"),

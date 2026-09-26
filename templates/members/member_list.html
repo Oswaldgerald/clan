@@ -8,6 +8,7 @@
     <h1>Clan Members</h1>
     <p class="muted">Search by name, member ID, residence, or occupation.</p>
   </div>
+  <a class="button" href="{% url 'member-list-export' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}" download><i data-lucide="file-spreadsheet" aria-hidden="true"></i>Export XLS</a>
 </section>
 
 <section class="grid member-summary" aria-label="Member summary">

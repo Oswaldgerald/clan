@@ -1,13 +1,11 @@
 import tempfile
 from datetime import date, timedelta
-from io import BytesIO
+import xlrd
 
-from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
-from openpyxl import load_workbook
 
 from accounts.models import User
 from families.models import FamilyBranch
@@ -577,7 +575,7 @@ class PortalAccessTests(TestCase):
         self.assertContains(response, "Young Man")
         self.assertNotContains(response, "Older Woman")
 
-    def test_active_member_excel_export_uses_current_filters(self):
+    def test_member_list_xls_export_uses_current_filters(self):
         self.client.login(username="admin", password="pass12345")
         Person.objects.create(
             member_id="EXPORT-MALE",
@@ -595,75 +593,19 @@ class PortalAccessTests(TestCase):
             status=Status.VERIFIED,
         )
 
-        response = self.client.get(reverse("active-member-export"), {"gender": "female"})
+        response = self.client.get(
+            reverse("member-list-export"),
+            {"gender": "female", "living_status": "living"},
+        )
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn("active_members.xlsx", response["Content-Disposition"])
-        workbook = load_workbook(BytesIO(b"".join(response.streaming_content)), read_only=True)
-        rows = list(workbook["Active Members"].iter_rows(values_only=True))
-        workbook.close()
-        self.assertEqual(rows[0], ("Member ID", "Name", "Gender", "Date of Birth", "Age", "Residence"))
-        self.assertIn("EXPORT-FEMALE", [row[0] for row in rows[1:]])
-        self.assertNotIn("EXPORT-MALE", [row[0] for row in rows[1:]])
-
-    def test_staff_can_download_bulk_member_template(self):
-        self.client.login(username="admin", password="pass12345")
-
-        response = self.client.get(reverse("management-member-import-template"))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("moshi_member_bulk_import_template.xlsx", response["Content-Disposition"])
-        workbook = load_workbook(BytesIO(b"".join(response.streaming_content)), read_only=True)
-        self.assertIn("Members", workbook.sheetnames)
-        self.assertEqual(workbook["Members"]["B1"].value, "First name *")
-        workbook.close()
-
-    def test_staff_can_bulk_import_members_from_completed_template(self):
-        self.client.login(username="admin", password="pass12345")
-        template_path = settings.BASE_DIR / "static" / "downloads" / "member_bulk_import_template.xlsx"
-        workbook = load_workbook(template_path)
-        sheet = workbook["Members"]
-        sheet["B2"] = "Bulk"
-        sheet["D2"] = "Member"
-        sheet["F2"] = "female"
-        sheet["P2"] = "yes"
-        sheet["W2"] = "verified"
-        output = BytesIO()
-        workbook.save(output)
-        workbook.close()
-        upload = SimpleUploadedFile(
-            "completed_members.xlsx",
-            output.getvalue(),
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
-
-        response = self.client.post(
-            reverse("management-member-bulk-import"),
-            {"workbook": upload},
-        )
-
-        self.assertRedirects(response, reverse("management-members"))
-        self.assertTrue(
-            Person.objects.filter(first_name="Bulk", last_name="Member", gender=Person.Gender.FEMALE).exists()
-        )
-
-    def test_generated_sample_workbook_is_upload_ready(self):
-        self.client.login(username="admin", password="pass12345")
-        members_before = Person.objects.count()
-        sample_path = settings.BASE_DIR / "static" / "downloads" / "member_bulk_sample_data.xlsx"
-        upload = SimpleUploadedFile(
-            "member_bulk_sample_data.xlsx",
-            sample_path.read_bytes(),
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
-
-        response = self.client.post(
-            reverse("management-member-bulk-import"),
-            {"workbook": upload},
-        )
-
-        self.assertRedirects(response, reverse("management-members"))
-        self.assertEqual(Person.objects.count() - members_before, 15)
+        self.assertIn("clan_members.xls", response["Content-Disposition"])
+        self.assertEqual(response["Content-Type"], "application/vnd.ms-excel")
+        workbook = xlrd.open_workbook(file_contents=b"".join(response.streaming_content))
+        sheet = workbook.sheet_by_name("Members")
+        member_ids = sheet.col_values(0, start_rowx=1)
+        self.assertIn("EXPORT-FEMALE", member_ids)
+        self.assertNotIn("EXPORT-MALE", member_ids)
 
     def test_management_member_form_is_sectioned(self):
         self.client.login(username="admin", password="pass12345")
