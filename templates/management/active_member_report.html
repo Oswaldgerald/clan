@@ -9,9 +9,6 @@
     <h1>{{ report_heading|default:"Active Member Report" }}</h1>
     <p class="muted">Verified, living clan members grouped by age and gender.</p>
   </div>
-  <div class="action-group">
-    <button class="button button-secondary" type="button" data-print-report><i data-lucide="printer" aria-hidden="true"></i>Print Report</button>
-  </div>
 </section>
 
 <section class="grid report-summary" aria-label="Active member summary">
@@ -76,6 +73,10 @@
 
 <div class="report-table-heading">
   <div><h2>Active Members</h2><p class="muted">{{ filtered_total }} record{{ filtered_total|pluralize }} found</p></div>
+  <div class="action-group">
+    <a class="button" href="{% url 'active-member-export' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}" download><i data-lucide="file-spreadsheet" aria-hidden="true"></i>Export XLS</a>
+    <button class="button button-secondary" type="button" data-print-report><i data-lucide="printer" aria-hidden="true"></i>Print</button>
+  </div>
 </div>
 <table>
   <thead><tr><th>Member ID</th><th>Name</th><th>Gender</th><th>Date of Birth</th><th>Age</th><th>Residence</th></tr></thead>

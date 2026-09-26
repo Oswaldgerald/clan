@@ -6,7 +6,7 @@ from . import management_views
 urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path("members/", views.member_list, name="member-list"),
-    path("members/export/", views.member_list_export, name="member-list-export"),
+    path("reports/active-members/export/", views.active_member_export, name="active-member-export"),
     path("members/<int:pk>/", views.person_detail, name="person-detail"),
     path("members/<int:pk>/add-child/", views.add_child, name="add-child"),
     path("submit/relative/", views.submit_relative, name="submit-relative"),

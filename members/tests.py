@@ -575,7 +575,7 @@ class PortalAccessTests(TestCase):
         self.assertContains(response, "Young Man")
         self.assertNotContains(response, "Older Woman")
 
-    def test_member_list_xls_export_uses_current_filters(self):
+    def test_active_member_xls_export_uses_current_filters(self):
         self.client.login(username="admin", password="pass12345")
         Person.objects.create(
             member_id="EXPORT-MALE",
@@ -594,12 +594,12 @@ class PortalAccessTests(TestCase):
         )
 
         response = self.client.get(
-            reverse("member-list-export"),
-            {"gender": "female", "living_status": "living"},
+            reverse("active-member-export"),
+            {"gender": "female", "age_group": "unknown"},
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn("clan_members.xls", response["Content-Disposition"])
+        self.assertIn("active_members.xls", response["Content-Disposition"])
         self.assertEqual(response["Content-Type"], "application/vnd.ms-excel")
         workbook = xlrd.open_workbook(file_contents=b"".join(response.streaming_content))
         sheet = workbook.sheet_by_name("Members")

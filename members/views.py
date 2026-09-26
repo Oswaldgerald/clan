@@ -84,13 +84,13 @@ def member_list(request):
 
 
 @login_required
-def member_list_export(request):
-    members, _, _, _, _ = filtered_member_list(request)
-    workbook = build_member_list_workbook(list(members))
+def active_member_export(request):
+    context = active_member_report_context(request, LIST_PAGE_SIZE)
+    workbook = build_member_list_workbook(context["filtered_members"])
     return FileResponse(
         workbook,
         as_attachment=True,
-        filename="clan_members.xls",
+        filename="active_members.xls",
         content_type="application/vnd.ms-excel",
     )
 
