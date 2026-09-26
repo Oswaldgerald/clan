@@ -30,6 +30,13 @@ class DashboardAccessTests(TestCase):
         self.assertNotContains(member_list_response, '<aside class="sidebar">', html=False)
         self.assertNotContains(member_list_response, "Clan Portal")
 
+    def test_registration_page_uses_centered_registration_layout(self):
+        response = self.client.get(reverse("member-register"))
+
+        self.assertContains(response, 'class="registration-screen"')
+        self.assertContains(response, "css/register.css")
+        self.assertNotContains(response, '<aside class="sidebar">', html=False)
+
     def test_anonymous_visitor_is_redirected_to_login(self):
         response = self.client.get(reverse("dashboard"))
 

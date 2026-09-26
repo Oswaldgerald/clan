@@ -1,27 +1,41 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Register - {{ clan_name }} Clan Registry{% endblock %}
+{% block body_class %}registration-page{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/register.css' %}">{% endblock %}
 
 {% block content %}
-<section class="page-title">
-  <div>
+<div class="registration-screen">
+  <section class="registration-intro">
+    <span class="registration-icon"><i data-lucide="user-round-plus" aria-hidden="true"></i></span>
+    <p class="section-translation">Usajili wa mwana ukoo</p>
     <h1>Member Registration</h1>
-    <p class="muted">Submit your clan membership registration. You can log in after an administrator approves it.</p>
-  </div>
-</section>
+    <p>Complete your details to request access to the {{ clan_name }} Clan Registry.</p>
+    <div class="registration-notice"><i data-lucide="shield-check" aria-hidden="true"></i><span>An administrator must approve your registration before you can log in.</span></div>
+  </section>
 
-<section class="card" style="max-width: 680px;">
-  <form method="post" class="form-grid">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    {% for field in form %}
-      <div>
-        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {{ field }}
-        {{ field.errors }}
+  <section class="card registration-card">
+    <div class="registration-card-heading">
+      <div><h2>Account Details</h2><p class="muted">Taarifa za akaunti</p></div>
+      <span>All fields are required</span>
+    </div>
+    <form method="post" class="registration-form">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      {% for field in form %}
+        <div class="registration-field field-{{ field.name }}">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<p class="field-help">{{ field.help_text|safe }}</p>{% endif %}
+          {{ field.errors }}
+        </div>
+      {% endfor %}
+      <div class="registration-actions">
+        <button type="submit"><i data-lucide="send" aria-hidden="true"></i>Submit Registration</button>
+        <p class="muted">Already registered? <a href="{% url 'login' %}">Return to login</a></p>
       </div>
-    {% endfor %}
-    <button type="submit">Submit Registration</button>
-  </form>
-</section>
+    </form>
+  </section>
+</div>
 {% endblock %}

@@ -1,0 +1,187 @@
+.registration-page .app-shell {
+  display: block;
+  min-height: calc(100vh - 64px);
+}
+
+.registration-page main {
+  width: 100%;
+  margin: 0;
+}
+
+.registration-screen {
+  width: min(100% - 40px, 900px);
+  margin: 0 auto;
+  padding: 44px 0 64px;
+}
+
+.registration-intro {
+  max-width: 660px;
+  margin: 0 auto 24px;
+  text-align: center;
+}
+
+.registration-icon {
+  width: 48px;
+  height: 48px;
+  display: inline-grid;
+  place-items: center;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  background: var(--cloud-strong);
+  color: var(--accent-dark);
+}
+
+.registration-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.registration-intro .section-translation {
+  margin: 0 0 5px;
+  color: var(--accent-dark);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.registration-intro h1 {
+  color: var(--navy);
+  font-size: 34px;
+}
+
+.registration-intro > p:not(.section-translation) {
+  margin: 9px auto 0;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.registration-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  color: #365766;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.registration-notice svg {
+  width: 17px;
+  height: 17px;
+  color: var(--success);
+}
+
+.registration-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.registration-card-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--line);
+  background: #fbfdff;
+}
+
+.registration-card-heading h2 {
+  color: var(--navy);
+  font-size: 19px;
+}
+
+.registration-card-heading p {
+  margin: 4px 0 0;
+  font-size: 12px;
+}
+
+.registration-card-heading > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.registration-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 20px;
+  padding: 22px;
+}
+
+.registration-field {
+  min-width: 0;
+}
+
+.registration-field input,
+.registration-field select,
+.registration-field .select2-container {
+  width: 100% !important;
+}
+
+.registration-field.field-phone_number {
+  grid-column: 1 / -1;
+}
+
+.registration-field.field-phone_number.phone-input-group {
+  grid-template-columns: minmax(210px, .8fr) minmax(260px, 1.2fr);
+}
+
+.field-help {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.field-help ul {
+  margin: 5px 0 0;
+  padding-left: 18px;
+}
+
+.registration-actions,
+.registration-form > .errorlist {
+  grid-column: 1 / -1;
+}
+
+.registration-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding-top: 4px;
+}
+
+.registration-actions p {
+  margin: 0;
+  font-size: 13px;
+}
+
+@media (max-width: 700px) {
+  .registration-screen {
+    width: min(100% - 24px, 560px);
+    padding: 26px 0 40px;
+  }
+
+  .registration-intro h1 {
+    font-size: 28px;
+  }
+
+  .registration-card-heading,
+  .registration-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .registration-form {
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+
+  .registration-field.field-phone_number,
+  .registration-actions {
+    grid-column: 1;
+  }
+
+  .registration-field.field-phone_number.phone-input-group {
+    grid-template-columns: 1fr;
+  }
+}
