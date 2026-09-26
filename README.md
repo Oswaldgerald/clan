@@ -66,6 +66,25 @@ docker compose exec db pg_dump -U postgres clan > backup.sql
 docker compose down        # stop (keeps data volumes)
 ```
 
+## Automatic Dokploy Deployment
+
+The GitHub Actions workflow in `.github/workflows/deploy.yml` runs the Django
+test suite for every push to `main`. After the tests pass, it asks Dokploy to
+deploy the configured application through the Dokploy API.
+
+Add these repository secrets under **GitHub > Settings > Secrets and variables
+> Actions**:
+
+- `DOKPLOY_URL` - the URL of the Dokploy dashboard, such as
+  `https://deploy.example.com` (not the public clan application URL).
+- `DOKPLOY_API_TOKEN` - an API token generated in the Dokploy profile settings.
+- `DOKPLOY_APPLICATION_ID` - the application ID for the clan application.
+
+The application ID can be copied from Dokploy or found through its
+`/api/project.all` endpoint. In Dokploy, ensure the application source points
+to this GitHub repository and its configured branch is `main`. The deployment
+can also be started manually from the workflow's **Run workflow** button.
+
 ## Current Foundation
 
 The initial models cover the document's proposed entities:
