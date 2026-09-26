@@ -35,6 +35,9 @@ class DashboardAccessTests(TestCase):
 
         self.assertContains(response, 'class="registration-screen"')
         self.assertContains(response, "css/register.css")
+        self.assertContains(response, "Personal Information")
+        self.assertContains(response, "Contact Information")
+        self.assertContains(response, "Login Details")
         self.assertNotContains(response, '<aside class="sidebar">', html=False)
 
     def test_anonymous_visitor_is_redirected_to_login(self):
