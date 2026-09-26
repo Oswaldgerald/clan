@@ -9,7 +9,14 @@
 
 .registration-page main {
   width: 100%;
+  min-height: calc(100vh - 64px);
   margin: 0;
+  background-image:
+    linear-gradient(rgba(8, 35, 36, .3), rgba(8, 35, 36, .5)),
+    url("../images/moshi-login-background.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 .registration-screen {
@@ -42,21 +49,23 @@
 
 .registration-intro .section-translation {
   margin: 0 0 5px;
-  color: var(--accent-dark);
+  color: #d9efff;
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
 }
 
 .registration-intro h1 {
-  color: var(--navy);
+  color: #fff;
   font-size: 34px;
+  text-shadow: 0 2px 12px rgba(4, 24, 26, .34);
 }
 
 .registration-intro > p:not(.section-translation) {
   margin: 9px auto 0;
-  color: var(--muted);
+  color: #f3f8fa;
   font-size: 16px;
+  text-shadow: 0 1px 8px rgba(4, 24, 26, .42);
 }
 
 .registration-notice {
@@ -64,7 +73,7 @@
   align-items: center;
   gap: 8px;
   margin-top: 14px;
-  color: #365766;
+  color: #fff;
   font-size: 13px;
   font-weight: 650;
 }
@@ -72,12 +81,16 @@
 .registration-notice svg {
   width: 17px;
   height: 17px;
-  color: var(--success);
+  color: #9ce0c3;
 }
 
 .registration-card {
   padding: 0;
   overflow: hidden;
+  border-color: rgba(255, 255, 255, .72);
+  background: rgba(255, 255, 255, .95);
+  box-shadow: 0 24px 60px rgba(4, 24, 26, .3);
+  backdrop-filter: blur(10px);
 }
 
 .registration-card-heading {
@@ -87,7 +100,7 @@
   gap: 18px;
   padding: 18px 22px;
   border-bottom: 1px solid var(--line);
-  background: #fbfdff;
+  background: rgba(251, 253, 255, .9);
 }
 
 .registration-card-heading h2 {
@@ -196,6 +209,11 @@
 @media (max-width: 700px) {
   .registration-page header {
     position: relative;
+  }
+
+  .registration-page main {
+    background-attachment: scroll;
+    background-position: 58% center;
   }
 
   .registration-screen {
