@@ -251,6 +251,18 @@
       });
     }
 
+    function setupMemberImportPanel() {
+      const toggle = document.querySelector('[data-import-toggle]');
+      const panel = document.querySelector('[data-import-panel]');
+      if (!toggle || !panel) return;
+      toggle.addEventListener('click', () => {
+        const willOpen = panel.hidden;
+        panel.hidden = !willOpen;
+        toggle.setAttribute('aria-expanded', String(willOpen));
+        if (willOpen) panel.querySelector('input[type="file"]')?.focus();
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       setupPageLoader();
       setupDatePickers();
@@ -263,5 +275,6 @@
       setupNavigation();
       setupResponsiveTables();
       setupPrintButtons();
+      setupMemberImportPanel();
       if (window.lucide) lucide.createIcons();
     });

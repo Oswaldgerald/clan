@@ -1,6 +1,9 @@
 import tempfile
 from datetime import date, timedelta
+from io import BytesIO
+
 import xlrd
+from openpyxl import load_workbook
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
@@ -606,6 +609,51 @@ class PortalAccessTests(TestCase):
         member_ids = sheet.col_values(0, start_rowx=1)
         self.assertIn("EXPORT-FEMALE", member_ids)
         self.assertNotIn("EXPORT-MALE", member_ids)
+
+    def test_manage_members_shows_import_and_export_controls(self):
+        self.client.login(username="admin", password="pass12345")
+
+        response = self.client.get(reverse("management-members"))
+
+        self.assertContains(response, "Import Members")
+        self.assertContains(response, "Export XLS")
+        self.assertContains(response, reverse("management-member-import-template"))
+
+    def test_staff_can_download_and_upload_member_template(self):
+        self.client.login(username="admin", password="pass12345")
+        template_response = self.client.get(reverse("management-member-import-template"))
+        workbook = load_workbook(BytesIO(b"".join(template_response.streaming_content)))
+        sheet = workbook["Members"]
+        sheet["B2"] = "Bulk"
+        sheet["D2"] = "Member"
+        sheet["F2"] = "female"
+        sheet["P2"] = "yes"
+        sheet["W2"] = "verified"
+        output = BytesIO()
+        workbook.save(output)
+        workbook.close()
+        upload = SimpleUploadedFile(
+            "completed_members.xlsx",
+            output.getvalue(),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+
+        response = self.client.post(reverse("management-member-bulk-import"), {"workbook": upload})
+
+        self.assertRedirects(response, reverse("management-members"))
+        self.assertTrue(Person.objects.filter(first_name="Bulk", last_name="Member").exists())
+
+    def test_management_xls_export_uses_search_filter(self):
+        self.client.login(username="admin", password="pass12345")
+        Person.objects.create(member_id="KEEP-001", first_name="Unique", last_name="Export", status=Status.VERIFIED)
+        Person.objects.create(member_id="DROP-001", first_name="Different", last_name="Member", status=Status.VERIFIED)
+
+        response = self.client.get(reverse("management-member-export"), {"q": "Unique"})
+
+        workbook = xlrd.open_workbook(file_contents=b"".join(response.streaming_content))
+        member_ids = workbook.sheet_by_name("Members").col_values(0, start_rowx=1)
+        self.assertIn("KEEP-001", member_ids)
+        self.assertNotIn("DROP-001", member_ids)
 
     def test_management_member_form_is_sectioned(self):
         self.client.login(username="admin", password="pass12345")

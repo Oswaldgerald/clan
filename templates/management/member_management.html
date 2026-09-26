@@ -18,7 +18,35 @@
       <h2>Member Directory</h2>
       <p class="muted">Orodha ya wana ukoo</p>
     </div>
+    <div class="action-group">
+      <button class="button button-secondary" type="button" data-import-toggle aria-expanded="{% if show_import_panel %}true{% else %}false{% endif %}" aria-controls="member-import-panel"><i data-lucide="upload" aria-hidden="true"></i>Import Members</button>
+      <a class="button" href="{% url 'management-member-export' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}" download><i data-lucide="file-spreadsheet" aria-hidden="true"></i>Export XLS</a>
+    </div>
   </div>
+  <section id="member-import-panel" class="card management-import-panel" data-import-panel {% if not show_import_panel %}hidden{% endif %}>
+    <div class="import-option">
+      <div><span class="import-step">1</span><h3>Download Template</h3><p class="muted">Use the blank template or start with example records.</p></div>
+      <div class="action-group">
+        <a class="button button-secondary" href="{% url 'management-member-import-template' %}" download>Blank Template</a>
+        <a class="button button-secondary" href="{% url 'management-member-import-sample' %}" download>Sample Data</a>
+      </div>
+    </div>
+    <div class="import-option">
+      <div><span class="import-step">2</span><h3>Upload Completed Template</h3><p class="muted">The workbook is validated before records are created.</p></div>
+      <form class="management-import-form" method="post" action="{% url 'management-member-bulk-import' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ bulk_import_form.workbook }}
+        {{ bulk_import_form.workbook.errors }}
+        <button type="submit"><i data-lucide="upload" aria-hidden="true"></i>Import</button>
+      </form>
+    </div>
+    {% if import_errors %}
+      <div class="import-errors">
+        <strong>Import could not be completed</strong>
+        <ul>{% for error in import_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+      </div>
+    {% endif %}
+  </section>
   <form class="search" method="get">
     <input type="search" name="q" value="{{ query }}" placeholder="Search by name or member ID" aria-label="Search members">
     <button type="submit">Search</button>

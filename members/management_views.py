@@ -1,22 +1,28 @@
 from collections import defaultdict
+from io import BytesIO
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 from django import forms
 from django.db.models import Count, Q
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from openpyxl import load_workbook
 
 from audit.models import AuditLog
 from config.choices import Status
 from families.models import Household
 from families.models import ClanIdentity
-from families.identity import clan_name
+from families.identity import clan_name, clan_prefix
 
-from .forms import PersonForm, RelationshipForm
+from .forms import BulkMemberImportForm, PersonForm, RelationshipForm
 from .models import CorrectionRequest, Marriage, Person, Relationship
+from .services.bulk_import import import_members_from_workbook
 from .services.family_tree import build_family_tree
+from .services.member_list_export import build_member_list_workbook
 from .services.member_reports import active_member_report_context
 from .services.relationships import synchronize_parent_relationship
 from .views import LIST_PAGE_SIZE, query_without
@@ -57,8 +63,22 @@ def command_center(request):
 
 @staff_member_required
 def member_management(request):
+    members, query = management_member_queryset(request)
+    return render(
+        request,
+        "management/member_management.html",
+        {
+            "members": Paginator(members, LIST_PAGE_SIZE).get_page(request.GET.get("page")),
+            "query": query,
+            "bulk_import_form": BulkMemberImportForm(),
+            "pagination_query": query_without(request, "page"),
+        },
+    )
+
+
+def management_member_queryset(request):
     query = request.GET.get("q", "").strip()
-    members = Person.objects.select_related("created_by").order_by("-created_at")
+    members = Person.objects.select_related("created_by", "account").order_by("-created_at")
     if query:
         members = members.filter(
             Q(member_id__icontains=query)
@@ -67,14 +87,18 @@ def member_management(request):
             | Q(phone_number__icontains=query)
             | Q(email__icontains=query)
         )
-    return render(
-        request,
-        "management/member_management.html",
-        {
-            "members": Paginator(members, LIST_PAGE_SIZE).get_page(request.GET.get("page")),
-            "query": query,
-            "pagination_query": query_without(request, "page"),
-        },
+    return members, query
+
+
+@staff_member_required
+def management_member_export(request):
+    members, _ = management_member_queryset(request)
+    workbook = build_member_list_workbook(list(members))
+    return FileResponse(
+        workbook,
+        as_attachment=True,
+        filename="managed_members.xls",
+        content_type="application/vnd.ms-excel",
     )
 
 
@@ -83,6 +107,79 @@ def active_member_report(request):
     context = active_member_report_context(request, LIST_PAGE_SIZE)
     context["report_url_name"] = "management-active-member-report"
     return render(request, "management/active_member_report.html", context)
+
+
+@staff_member_required
+def member_import_template(request):
+    template_path = settings.BASE_DIR / "static" / "downloads" / "member_bulk_import_template.xlsx"
+    return FileResponse(
+        template_path.open("rb"),
+        as_attachment=True,
+        filename=f"{clan_prefix().lower()}_member_bulk_import_template.xlsx",
+    )
+
+
+@staff_member_required
+def member_import_sample(request):
+    sample_path = settings.BASE_DIR / "static" / "downloads" / "member_bulk_sample_data.xlsx"
+    workbook = load_workbook(sample_path)
+    sheet = workbook["Members"]
+    headers = {cell.value: cell.column for cell in sheet[1]}
+    for row in sheet.iter_rows(min_row=2):
+        clan_cell = row[headers["Clan name"] - 1]
+        if clan_cell.value == "Moshi":
+            clan_cell.value = clan_name()
+    output = BytesIO()
+    workbook.save(output)
+    workbook.close()
+    output.seek(0)
+    return FileResponse(
+        output,
+        as_attachment=True,
+        filename=f"{clan_prefix().lower()}_member_bulk_sample_data.xlsx",
+    )
+
+
+@staff_member_required
+def member_bulk_import(request):
+    if request.method != "POST":
+        return redirect("management-members")
+
+    form = BulkMemberImportForm(request.POST, request.FILES)
+    if not form.is_valid():
+        members, query = management_member_queryset(request)
+        return render(
+            request,
+            "management/member_management.html",
+            {
+                "members": Paginator(members, LIST_PAGE_SIZE).get_page(1),
+                "query": query,
+                "bulk_import_form": form,
+                "pagination_query": "",
+                "show_import_panel": True,
+            },
+            status=400,
+        )
+
+    imported, import_errors = import_members_from_workbook(form.cleaned_data["workbook"], request.user)
+    if import_errors:
+        members, query = management_member_queryset(request)
+        return render(
+            request,
+            "management/member_management.html",
+            {
+                "members": Paginator(members, LIST_PAGE_SIZE).get_page(1),
+                "query": query,
+                "bulk_import_form": form,
+                "import_errors": import_errors,
+                "pagination_query": "",
+                "show_import_panel": True,
+            },
+            status=400,
+        )
+
+    messages.success(request, f"{len(imported)} members were imported successfully.")
+    return redirect("management-members")
 
 
 @staff_member_required
