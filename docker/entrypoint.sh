@@ -1,6 +1,13 @@
 #!/bin/sh
 set -e
 
+# Host-mounted folders keep the host's ownership, so fix them before dropping root.
+if [ "$(id -u)" = "0" ]; then
+    mkdir -p /app/staticfiles /app/media
+    chown -R app:app /app/staticfiles /app/media
+    exec setpriv --reuid=app --regid=app --init-groups "$0" "$@"
+fi
+
 if [ "${DJANGO_SKIP_SETUP:-0}" != "1" ]; then
     python - <<'PY'
 import os, sys, time

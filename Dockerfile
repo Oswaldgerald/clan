@@ -17,8 +17,6 @@ RUN chmod +x docker/entrypoint.sh \
     && mkdir -p /app/staticfiles /app/media \
     && chown -R app:app /app
 
-USER app
-
 EXPOSE 8000
 
 ENTRYPOINT ["docker/entrypoint.sh"]
