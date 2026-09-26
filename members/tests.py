@@ -34,6 +34,9 @@ class DashboardAccessTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Clan Dashboard")
+        self.assertContains(response, "Age Breakdown")
+        self.assertContains(response, "Gender Breakdown")
+        self.assertContains(response, "Clan Dashboard")
 
 
 class ClanIdentityTests(TestCase):

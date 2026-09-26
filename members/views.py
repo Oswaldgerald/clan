@@ -9,9 +9,10 @@ from config.choices import Status
 from accounts.models import User
 
 from .forms import ExistingChildForm, MemberRelationshipForm, MemberRelativeForm
-from .models import Announcement, Person
+from .models import Person
 from .models import Relationship
 from .services.family_tree import build_family_tree, get_direct_children, get_spouses
+from .services.member_reports import active_member_report_context
 
 
 LIST_PAGE_SIZE = 10
@@ -19,22 +20,15 @@ LIST_PAGE_SIZE = 10
 
 @login_required
 def dashboard(request):
-    stats = {
-        "total_members": Person.objects.count(),
-        "living_members": Person.objects.filter(is_living=True).count(),
-        "deceased_members": Person.objects.filter(is_living=False).count(),
-    }
-    recent_members = Person.objects.order_by("-created_at")[:8]
-    recent_announcements = Announcement.objects.order_by("-published_at")[:5]
-    return render(
-        request,
-        "members/dashboard.html",
+    context = active_member_report_context(request, LIST_PAGE_SIZE)
+    context.update(
         {
-            "stats": stats,
-            "recent_members": recent_members,
-            "recent_announcements": recent_announcements,
-        },
+            "report_heading": "Clan Dashboard",
+            "report_translation": "Dashibodi ya ukoo",
+            "report_url_name": "dashboard",
+        }
     )
+    return render(request, "management/active_member_report.html", context)
 
 
 def member_list(request):

@@ -1,5 +1,4 @@
 from collections import defaultdict
-from datetime import date
 from io import BytesIO
 
 from django.conf import settings
@@ -23,6 +22,7 @@ from .forms import BulkMemberImportForm, PersonForm, RelationshipForm
 from .models import CorrectionRequest, Marriage, Person, Relationship
 from .services.bulk_import import import_members_from_workbook
 from .services.family_tree import build_family_tree
+from .services.member_reports import active_member_report_context
 from .services.relationships import synchronize_parent_relationship
 from .views import LIST_PAGE_SIZE, query_without
 
@@ -84,74 +84,11 @@ def member_management(request):
     )
 
 
-def age_on(birth_date, today=None):
-    if not birth_date:
-        return None
-    today = today or date.today()
-    return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
-
-
 @staff_member_required
 def active_member_report(request):
-    query = request.GET.get("q", "").strip()
-    gender = request.GET.get("gender", "").strip()
-    age_group = request.GET.get("age_group", "").strip()
-    active_members = list(
-        Person.objects.filter(status=Status.VERIFIED, is_living=True).order_by("last_name", "first_name", "member_id")
-    )
-
-    for member in active_members:
-        member.report_age = age_on(member.date_of_birth)
-
-    summary = {
-        "total": len(active_members),
-        "male": sum(member.gender == Person.Gender.MALE for member in active_members),
-        "female": sum(member.gender == Person.Gender.FEMALE for member in active_members),
-        "unknown_gender": sum(not member.gender for member in active_members),
-    }
-    age_groups = [
-        {"value": "under_18", "label": "Under 18", "swahili": "Chini ya miaka 18", "total": sum(member.report_age is not None and member.report_age < 18 for member in active_members)},
-        {"value": "18_35", "label": "18-35", "swahili": "Miaka 18-35", "total": sum(member.report_age is not None and 18 <= member.report_age <= 35 for member in active_members)},
-        {"value": "36_59", "label": "36-59", "swahili": "Miaka 36-59", "total": sum(member.report_age is not None and 36 <= member.report_age <= 59 for member in active_members)},
-        {"value": "60_plus", "label": "60+", "swahili": "Miaka 60 na zaidi", "total": sum(member.report_age is not None and member.report_age >= 60 for member in active_members)},
-        {"value": "unknown", "label": "Not recorded", "swahili": "Haijawekwa", "total": sum(member.report_age is None for member in active_members)},
-    ]
-
-    filtered_members = active_members
-    if query:
-        normalized_query = query.casefold()
-        filtered_members = [
-            member
-            for member in filtered_members
-            if normalized_query in member.full_name.casefold() or normalized_query in member.member_id.casefold()
-        ]
-    if gender in {Person.Gender.MALE, Person.Gender.FEMALE}:
-        filtered_members = [member for member in filtered_members if member.gender == gender]
-    if age_group == "under_18":
-        filtered_members = [member for member in filtered_members if member.report_age is not None and member.report_age < 18]
-    elif age_group == "18_35":
-        filtered_members = [member for member in filtered_members if member.report_age is not None and 18 <= member.report_age <= 35]
-    elif age_group == "36_59":
-        filtered_members = [member for member in filtered_members if member.report_age is not None and 36 <= member.report_age <= 59]
-    elif age_group == "60_plus":
-        filtered_members = [member for member in filtered_members if member.report_age is not None and member.report_age >= 60]
-    elif age_group == "unknown":
-        filtered_members = [member for member in filtered_members if member.report_age is None]
-
-    return render(
-        request,
-        "management/active_member_report.html",
-        {
-            "members": Paginator(filtered_members, LIST_PAGE_SIZE).get_page(request.GET.get("page")),
-            "summary": summary,
-            "age_groups": age_groups,
-            "query": query,
-            "gender_filter": gender,
-            "age_group_filter": age_group,
-            "pagination_query": query_without(request, "page"),
-            "filtered_total": len(filtered_members),
-        },
-    )
+    context = active_member_report_context(request, LIST_PAGE_SIZE)
+    context["report_url_name"] = "management-active-member-report"
+    return render(request, "management/active_member_report.html", context)
 
 
 @staff_member_required
