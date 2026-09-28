@@ -63,7 +63,7 @@
   <div><h2>Member Directory</h2><p class="muted">{{ members.paginator.count }} record{{ members.paginator.count|pluralize }} found</p></div>
 </div>
 
-<table class="member-directory-table">
+<div class="responsive-table"><table class="member-directory-table">
   <thead>
     <tr><th>Member ID</th><th>Name</th><th>Account Role</th><th>Gender</th><th>Life Status</th><th>Status</th></tr>
   </thead>
@@ -84,6 +84,6 @@
       <tr><td colspan="6" class="empty-state"><i data-lucide="search-x" aria-hidden="true"></i><span>No members match the selected filters.</span></td></tr>
     {% endfor %}
   </tbody>
-</table>
+</table></div>
 {% include "partials/pagination.html" with page_obj=members pagination_query=pagination_query label="Members" %}
 {% endblock %}

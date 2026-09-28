@@ -43,7 +43,7 @@
   <div class="section-heading">
     <div><h2>Direct relationship records</h2><p class="muted">Includes pending records so administrators can identify gaps and conflicts.</p></div>
   </div>
-  <table>
+  <div class="responsive-table"><table>
     <thead><tr><th>From</th><th>Relationship</th><th>To</th><th>Status</th><th>Actions</th></tr></thead>
     <tbody>
       {% for relationship in relationships %}
@@ -59,7 +59,7 @@
       </tr>
       {% empty %}<tr><td colspan="5" class="muted">No direct relationship records found.</td></tr>{% endfor %}
     </tbody>
-  </table>
+  </table></div>
   {% include "partials/pagination.html" with page_obj=relationships pagination_query=pagination_query label="Relationships" %}
 </section>
 {% endif %}

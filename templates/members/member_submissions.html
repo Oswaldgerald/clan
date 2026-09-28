@@ -13,7 +13,7 @@
 
 <section class="card">
   <h2>People Submitted</h2>
-  <table style="margin-top: 12px;">
+  <div class="responsive-table"><table>
     <thead><tr><th>Member ID</th><th>Name</th><th>Status</th></tr></thead>
     <tbody>
       {% for person in submitted_people %}
@@ -26,13 +26,13 @@
         <tr><td colspan="3" class="muted">You have not submitted people yet.</td></tr>
       {% endfor %}
     </tbody>
-  </table>
+  </table></div>
   {% include "partials/pagination.html" with page_obj=submitted_people pagination_query=people_query page_param="people_page" label="Submitted people" %}
 </section>
 
 <section class="card" style="margin-top: 18px;">
   <h2>Relationships Submitted</h2>
-  <table style="margin-top: 12px;">
+  <div class="responsive-table"><table>
     <thead><tr><th>From</th><th>Relationship</th><th>To</th><th>Status</th></tr></thead>
     <tbody>
       {% for relationship in submitted_relationships %}
@@ -46,7 +46,7 @@
         <tr><td colspan="4" class="muted">You have not submitted relationships yet.</td></tr>
       {% endfor %}
     </tbody>
-  </table>
+  </table></div>
   {% include "partials/pagination.html" with page_obj=submitted_relationships pagination_query=relationships_query page_param="relationships_page" label="Submitted relationships" %}
 </section>
 {% endblock %}

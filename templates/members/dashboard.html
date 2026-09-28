@@ -20,7 +20,7 @@
 <section class="grid columns" style="margin-top: 18px;">
   <div class="card">
     <h2>Recently Added Members</h2>
-    <table style="margin-top: 12px;">
+    <div class="responsive-table"><table>
       <thead><tr><th>Member</th><th>Status</th></tr></thead>
       <tbody>
         {% for member in recent_members %}
@@ -32,7 +32,7 @@
           <tr><td colspan="2" class="muted">No members have been registered yet.</td></tr>
         {% endfor %}
       </tbody>
-    </table>
+    </table></div>
   </div>
 
   <aside class="grid">

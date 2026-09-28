@@ -5,7 +5,7 @@
       <p class="muted">{{ items.paginator.count }} record{{ items.paginator.count|pluralize }} awaiting review</p>
     </div>
   </div>
-  <table class="verification-table">
+  <div class="responsive-table"><table class="verification-table">
     <thead><tr><th>Record</th><th>Status</th><th>Actions</th></tr></thead>
     <tbody>
       {% for item in items %}
@@ -48,6 +48,6 @@
         <tr><td colspan="3" class="muted">No pending records.</td></tr>
       {% endfor %}
     </tbody>
-  </table>
+  </table></div>
   {% include "partials/pagination.html" with page_obj=items pagination_query=pagination_query page_param=page_param label=title %}
 </section>

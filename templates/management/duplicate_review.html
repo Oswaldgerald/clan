@@ -13,7 +13,7 @@
 <section class="card">
   <h2>Name and Birthdate Matches</h2>
   {% for group in duplicate_groups %}
-    <table style="margin-top: 12px; margin-bottom: 16px;">
+    <div class="responsive-table" style="margin-bottom: 16px;"><table>
       <thead><tr><th>Member ID</th><th>Name</th><th>Birth date</th><th>Admin</th></tr></thead>
       <tbody>
         {% for person in group %}
@@ -25,7 +25,7 @@
           </tr>
         {% endfor %}
       </tbody>
-    </table>
+    </table></div>
   {% empty %}
     <p class="muted">No name/date duplicate groups found.</p>
   {% endfor %}
@@ -34,7 +34,7 @@
 
 <section class="card" style="margin-top: 18px;">
   <h2>Shared Phone Numbers</h2>
-  <table style="margin-top: 12px;">
+  <div class="responsive-table"><table>
     <thead><tr><th>Phone</th><th>Records</th></tr></thead>
     <tbody>
       {% for item in phone_duplicates %}
@@ -43,7 +43,7 @@
         <tr><td colspan="2" class="muted">No shared phone numbers found.</td></tr>
       {% endfor %}
     </tbody>
-  </table>
+  </table></div>
   {% include "partials/pagination.html" with page_obj=phone_duplicates pagination_query=phones_query page_param="phones_page" label="Shared phone numbers" %}
 </section>
 {% endblock %}

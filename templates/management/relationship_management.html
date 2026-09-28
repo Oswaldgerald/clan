@@ -11,7 +11,7 @@
   <a class="button" href="{% url 'management-relationship-add' %}">Add Relationship</a>
 </section>
 
-<table>
+<div class="responsive-table"><table>
   <thead><tr><th>From</th><th>Relationship</th><th>To</th><th>Status</th><th>Actions</th></tr></thead>
   <tbody>
     {% for relationship in relationships %}
@@ -31,6 +31,6 @@
       <tr><td colspan="5" class="muted">No relationships found.</td></tr>
     {% endfor %}
   </tbody>
-</table>
+</table></div>
 {% include "partials/pagination.html" with page_obj=relationships pagination_query=pagination_query label="Relationships" %}
 {% endblock %}

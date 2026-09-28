@@ -44,7 +44,7 @@
 <section class="grid columns">
   <article class="card">
     <h2>Account</h2>
-    <table style="margin-top: 12px;">
+    <div class="responsive-table"><table>
       <tbody>
         <tr><th>Username</th><td>{{ request.user.username }}</td></tr>
         <tr><th>Name</th><td>{{ request.user.get_full_name|default:request.user.username }}</td></tr>
@@ -52,7 +52,7 @@
         <tr><th>Role</th><td>{{ request.user.get_role_display }}</td></tr>
         <tr><th>Verified</th><td>{% if request.user.is_verified_member %}Yes{% else %}Pending{% endif %}</td></tr>
       </tbody>
-    </table>
+    </table></div>
   </article>
 
   <aside class="card">

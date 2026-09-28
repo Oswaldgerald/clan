@@ -47,7 +47,7 @@
 
 <section class="card" style="margin-top: 18px;">
   <h2>Recent Member Records</h2>
-  <table style="margin-top: 12px;">
+  <div class="responsive-table"><table>
     <thead><tr><th>Member</th><th>Status</th><th>Admin</th></tr></thead>
     <tbody>
       {% for member in recent_members %}
@@ -60,6 +60,6 @@
         <tr><td colspan="3" class="muted">No member records yet.</td></tr>
       {% endfor %}
     </tbody>
-  </table>
+  </table></div>
 </section>
 {% endblock %}

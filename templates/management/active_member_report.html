@@ -78,7 +78,7 @@
     <button class="button button-secondary" type="button" data-print-report><i data-lucide="printer" aria-hidden="true"></i>Print</button>
   </div>
 </div>
-<table>
+<div class="responsive-table"><table>
   <thead><tr><th>Member ID</th><th>Name</th><th>Gender</th><th>Date of Birth</th><th>Age</th><th>Residence</th></tr></thead>
   <tbody>
     {% for member in members %}
@@ -94,6 +94,6 @@
       <tr><td colspan="6" class="empty-state"><i data-lucide="search-x" aria-hidden="true"></i><span>No active members match these filters.</span></td></tr>
     {% endfor %}
   </tbody>
-</table>
+</table></div>
 {% include "partials/pagination.html" with page_obj=members pagination_query=pagination_query label="Active members" %}
 {% endblock %}
