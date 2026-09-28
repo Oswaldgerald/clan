@@ -56,6 +56,8 @@ class DashboardAccessTests(TestCase):
         self.assertContains(response, "Age Breakdown")
         self.assertContains(response, "Gender Breakdown")
         self.assertContains(response, "Clan Dashboard")
+        self.assertContains(response, "Export XLS")
+        self.assertNotContains(response, "data-print-report")
 
 
 class ClanIdentityTests(TestCase):
@@ -141,6 +143,7 @@ class FamilyTreeTests(TestCase):
         self.assertContains(response, "Print Loaded Tree")
         self.assertContains(response, "data-print-tree")
         self.assertContains(response, "js/tree-print.js")
+        self.assertContains(response, "css/tree-print.css")
         self.assertContains(response, 'class="family-tree-page"', html=False)
 
     def test_family_tree_excludes_unverified_relationships(self):

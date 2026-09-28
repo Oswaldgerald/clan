@@ -958,35 +958,3 @@
       .stats, .member-summary, .report-summary, .summary-grid { grid-template-columns: 1fr; }
       .action-group > .button { flex: 1 1 100%; }
     }
-    @media print {
-      @page { size: landscape; margin: 12mm; }
-      .family-tree-page { background: #fff; }
-      .family-tree-page header,
-      .family-tree-page .sidebar,
-      .family-tree-page .page-title,
-      .family-tree-page .tree-root-picker,
-      .family-tree-page .page-loader,
-      .family-tree-page .outline-help,
-      .family-tree-page [data-print-tree],
-      .family-tree-page .outline-toggle { display: none !important; }
-      .family-tree-page .app-shell,
-      .family-tree-page main { display: block; width: 100%; min-height: 0; margin: 0; }
-      .family-tree-page .tree-shell {
-        min-height: 0;
-        overflow: visible;
-        padding: 0;
-        border: 0;
-        box-shadow: none;
-      }
-      .family-tree-page .outline-tree-heading { display: flex; flex-direction: row; padding-bottom: 10px; }
-      .family-tree-page .outline-tree { width: 100%; max-width: none; margin-top: 12px; }
-      .family-tree-page .outline-row { grid-template-columns: minmax(0, 1fr); break-inside: avoid; }
-      .family-tree-page .outline-person,
-      .family-tree-page .outline-spouse { color: #16364f; text-decoration: none; }
-      .family-tree-page .outline-family-unit,
-      .family-tree-page .outline-avatar,
-      .family-tree-page .outline-parentage em {
-        print-color-adjust: exact;
-        -webkit-print-color-adjust: exact;
-      }
-    }

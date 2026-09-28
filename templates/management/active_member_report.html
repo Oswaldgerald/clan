@@ -75,7 +75,6 @@
   <div><h2>Active Members</h2><p class="muted">{{ filtered_total }} record{{ filtered_total|pluralize }} found</p></div>
   <div class="action-group">
     <a class="button" href="{% url 'active-member-export' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}" download><i data-lucide="file-spreadsheet" aria-hidden="true"></i>Export XLS</a>
-    <button class="button button-secondary" type="button" data-print-report><i data-lucide="printer" aria-hidden="true"></i>Print</button>
   </div>
 </div>
 <div class="responsive-table"><table>
