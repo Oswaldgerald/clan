@@ -237,7 +237,7 @@
 
     function setupResponsiveTables() {
       document.querySelectorAll('table').forEach((table) => {
-        if (table.parentElement?.classList.contains('table-scroll')) return;
+        if (table.closest('.table-scroll, .responsive-table')) return;
         const wrapper = document.createElement('div');
         wrapper.className = 'table-scroll';
         table.parentNode.insertBefore(wrapper, table);
@@ -246,7 +246,7 @@
     }
 
     function setupPrintButtons() {
-      document.querySelectorAll('[data-print-report]').forEach((button) => {
+      document.querySelectorAll('[data-print-report], [data-print-tree]').forEach((button) => {
         button.addEventListener('click', () => window.print());
       });
     }

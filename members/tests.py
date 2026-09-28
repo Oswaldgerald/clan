@@ -135,6 +135,13 @@ class FamilyTreeTests(TestCase):
         self.assertEqual(payload["root"], self.child.pk)
         self.assertEqual(len(payload["nodes"]), 3)
 
+    def test_loaded_family_tree_has_print_control(self):
+        response = self.client.get(reverse("family-tree"), {"root": self.child.pk})
+
+        self.assertContains(response, "Print Loaded Tree")
+        self.assertContains(response, "data-print-tree")
+        self.assertContains(response, 'class="family-tree-page"', html=False)
+
     def test_family_tree_excludes_unverified_relationships(self):
         outsider = Person.objects.create(member_id="MOSHI-PENDING", first_name="Pending", last_name="Relative")
         Relationship.objects.create(
