@@ -246,7 +246,7 @@
     }
 
     function setupPrintButtons() {
-      document.querySelectorAll('[data-print-report], [data-print-tree]').forEach((button) => {
+      document.querySelectorAll('[data-print-report]').forEach((button) => {
         button.addEventListener('click', () => window.print());
       });
     }

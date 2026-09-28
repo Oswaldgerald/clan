@@ -47,5 +47,8 @@
 {% endblock %}
 
 {% block extra_scripts %}
-  {% if root %}<script src="{% static 'js/family-tree.js' %}"></script>{% endif %}
+  {% if root %}
+    <script src="{% static 'js/family-tree.js' %}"></script>
+    <script src="{% static 'js/tree-print.js' %}"></script>
+  {% endif %}
 {% endblock %}

@@ -140,6 +140,7 @@ class FamilyTreeTests(TestCase):
 
         self.assertContains(response, "Print Loaded Tree")
         self.assertContains(response, "data-print-tree")
+        self.assertContains(response, "js/tree-print.js")
         self.assertContains(response, 'class="family-tree-page"', html=False)
 
     def test_family_tree_excludes_unverified_relationships(self):
