@@ -4,12 +4,12 @@
 
 .registration-page .app-shell {
   display: block;
-  min-height: calc(100vh - 64px);
+  min-height: 0;
 }
 
 .registration-page main {
   width: 100%;
-  min-height: calc(100vh - 64px);
+  min-height: calc(100vh - 134px);
   margin: 0;
   background-image:
     linear-gradient(rgba(8, 35, 36, .3), rgba(8, 35, 36, .5)),

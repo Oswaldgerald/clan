@@ -58,6 +58,8 @@ class DashboardAccessTests(TestCase):
         self.assertContains(response, "Clan Dashboard")
         self.assertContains(response, "Export XLS")
         self.assertNotContains(response, "data-print-report")
+        self.assertContains(response, "Clan Registry</strong>")
+        self.assertContains(response, "Preserving family connections across generations.")
 
 
 class ClanIdentityTests(TestCase):
