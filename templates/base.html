@@ -34,7 +34,7 @@
       {% endif %}
       {% if request.user.is_authenticated %}
         <div class="account-menu" data-account-menu>
-          <button class="user-identity" type="button" aria-haspopup="true" aria-expanded="false" data-account-menu-button>
+          <button class="user-identity" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="account-dropdown" data-account-menu-button>
             <span class="user-avatar" aria-hidden="true">
               {% if request.user.profile_photo %}
                 <img src="{{ request.user.profile_photo.url }}" alt="">
@@ -47,12 +47,12 @@
             <span>{{ request.user }}</span>
             <i class="account-chevron" data-lucide="chevron-down" aria-hidden="true"></i>
           </button>
-          <div class="account-dropdown" role="menu" data-account-dropdown>
-            <a href="{% url 'member-profile' %}" role="menuitem">Profile</a>
-            <a href="{% url 'account-settings' %}" role="menuitem">Settings</a>
-            <form class="logout-form" action="{% url 'logout' %}" method="post">
+          <div class="account-dropdown" id="account-dropdown" role="menu" aria-label="Account" data-account-dropdown>
+            <a href="{% url 'member-profile' %}" role="menuitem"><i data-lucide="user-round" aria-hidden="true"></i>Profile</a>
+            <a href="{% url 'account-settings' %}" role="menuitem"><i data-lucide="settings" aria-hidden="true"></i>Settings</a>
+            <form class="logout-form" action="{% url 'logout' %}" method="post" role="none">
               {% csrf_token %}
-              <button class="menu-logout" type="submit" role="menuitem">Logout</button>
+              <button class="menu-logout" type="submit" role="menuitem"><i data-lucide="log-out" aria-hidden="true"></i>Log out</button>
             </form>
           </div>
         </div>

@@ -147,20 +147,40 @@
       const button = menu.querySelector('[data-account-menu-button]');
       const dropdown = menu.querySelector('[data-account-dropdown]');
 
-      function setMenuOpen(isOpen) {
+      const items = () => [...dropdown.querySelectorAll('[role="menuitem"]')];
+
+      function setMenuOpen(isOpen, focusIndex = 0) {
         menu.classList.toggle('is-open', isOpen);
         button.setAttribute('aria-expanded', String(isOpen));
-        if (isOpen) dropdown.querySelector('a, button')?.focus();
+        if (isOpen) items().at(focusIndex)?.focus();
       }
 
       button.addEventListener('click', () => {
         setMenuOpen(!menu.classList.contains('is-open'));
       });
+      button.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault();
+          setMenuOpen(true, event.key === 'ArrowUp' ? -1 : 0);
+        }
+      });
       document.addEventListener('click', (event) => {
         if (!menu.contains(event.target)) setMenuOpen(false);
       });
+      menu.addEventListener('focusout', (event) => {
+        if (event.relatedTarget && !menu.contains(event.relatedTarget)) setMenuOpen(false);
+      });
+      dropdown.addEventListener('keydown', (event) => {
+        const list = items();
+        const index = list.indexOf(document.activeElement);
+        const moves = { ArrowDown: index + 1, ArrowUp: index - 1, Home: 0, End: list.length - 1 };
+        if (event.key in moves) {
+          event.preventDefault();
+          list.at(moves[event.key] % list.length)?.focus();
+        }
+      });
       menu.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
+        if (event.key === 'Escape' && menu.classList.contains('is-open')) {
           setMenuOpen(false);
           button.focus();
         }
