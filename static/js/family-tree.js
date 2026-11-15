@@ -106,6 +106,7 @@
       }
       toggle.dataset.loading = "true";
       toggle.classList.add("is-loading");
+      toggle.removeAttribute("title");
       try {
         const data = await fetchPerson(person.id);
         if (!childrenList.childElementCount) {
@@ -124,6 +125,8 @@
         }
       } catch (error) {
         toggle.textContent = "+";
+        toggle.title = "Couldn't load children. Select to try again.";
+        toggle.setAttribute("aria-label", `Couldn't load children of ${person.name}. Try again`);
       } finally {
         toggle.dataset.loading = "false";
         toggle.classList.remove("is-loading");

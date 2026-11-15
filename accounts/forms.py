@@ -23,6 +23,57 @@ class MemberRegistrationForm(UserCreationForm):
         model = User
         fields = ("username", "first_name", "last_name", "email", "phone_number", "gender")
 
+    LABELS = {
+        "username": "Username (Jina la mtumiaji)",
+        "first_name": "First name (Jina la kwanza)",
+        "last_name": "Last name (Jina la ukoo)",
+        "email": "Email (Barua pepe)",
+        "password1": "Password (Nenosiri)",
+        "password2": "Confirm password (Thibitisha nenosiri)",
+    }
+    HELP_TEXTS = {
+        "username": "Up to 150 characters: letters, numbers and @ . + - _ only.",
+        "password2": "Type the same password again.",
+    }
+    AUTOCOMPLETE = {
+        "username": "username",
+        "first_name": "given-name",
+        "last_name": "family-name",
+        "email": "email",
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, label in self.LABELS.items():
+            self.fields[name].label = label
+        for name, help_text in self.HELP_TEXTS.items():
+            self.fields[name].help_text = help_text
+        for name, value in self.AUTOCOMPLETE.items():
+            self.fields[name].widget.attrs["autocomplete"] = value
+        self.fields["email"].widget.attrs["inputmode"] = "email"
+        phone_widgets = self.fields["phone_number"].widget.widgets
+        phone_widgets[0].attrs["aria-label"] = "Country code"
+        phone_widgets[1].attrs.update({"autocomplete": "tel-national", "aria-label": "Phone number"})
+        for name, field in self.fields.items():
+            if field.help_text:
+                self._describe(name, f"{self[name].auto_id}_help")
+
+    def _describe(self, name, element_id):
+        widget = self.fields[name].widget
+        for target in getattr(widget, "widgets", [widget]):
+            ids = target.attrs.get("aria-describedby", "").split()
+            if element_id not in ids:
+                target.attrs["aria-describedby"] = " ".join([*ids, element_id])
+
+    def full_clean(self):
+        super().full_clean()
+        for name in self.errors:
+            if name in self.fields:
+                self._describe(name, f"{self[name].auto_id}_error")
+                widget = self.fields[name].widget
+                for target in getattr(widget, "widgets", [widget]):
+                    target.attrs["aria-invalid"] = "true"
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user.role = User.Role.MEMBER

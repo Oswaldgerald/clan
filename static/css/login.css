@@ -43,8 +43,8 @@
     text-align: center;
   }
   .login-heading h1 {
-    font-size: 30px;
-    color: #244f73;
+    font-size: 28px;
+    color: #1f4d38;
   }
   .login-heading p {
     max-width: 340px;
@@ -76,6 +76,6 @@
       padding: 24px 20px;
     }
     .login-heading h1 {
-      font-size: 26px;
+      font-size: 24px;
     }
   }
