@@ -200,6 +200,63 @@
   font-size: 13px;
 }
 
+.registration-error-summary {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 15px;
+  border: 1px solid #efbbb6;
+  border-left: 4px solid var(--danger);
+  border-radius: 8px;
+  background: #fff4f2;
+  color: #8d2d26;
+  font-size: 13px;
+}
+
+.registration-error-summary:focus { outline: 2px solid var(--danger); outline-offset: 2px; }
+.registration-error-summary svg { width: 18px; height: 18px; flex: 0 0 18px; margin-top: 1px; color: var(--danger); }
+.registration-error-summary strong { display: block; margin-bottom: 4px; font-size: 14px; }
+.registration-error-summary ul { margin: 0; padding-left: 18px; }
+.registration-error-summary a { color: #8d2d26; font-weight: 600; text-decoration: underline; }
+
+.registration-field.has-error input:not([type="hidden"]),
+.registration-field.has-error .select2-selection {
+  border-color: var(--danger) !important;
+  background: #fffafa;
+}
+
+.registration-field .field-error .errorlist { padding-left: 0; list-style: none; font-weight: 600; }
+
+.optional-tag {
+  margin-left: 6px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--cloud);
+  color: var(--accent-dark);
+  font-size: 11px;
+  font-weight: 600;
+  vertical-align: 1px;
+}
+
+.registration-field.phone-input-group > .field-help,
+.registration-field.phone-input-group > .field-error { grid-column: 1 / -1; }
+
+@media (min-width: 701px) {
+  .registration-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .registration-form > *,
+  .registration-form > .registration-field.field-username,
+  .registration-form > .registration-field.field-phone_number,
+  .registration-form > .password-guidance { grid-column: 1 / -1; }
+  .registration-form > .field-first_name,
+  .registration-form > .field-password1 { grid-column: 1; }
+  .registration-form > .field-last_name,
+  .registration-form > .field-password2 { grid-column: 2; }
+  .registration-form > .password-guidance { grid-column: 1 / -1; order: 1; }
+  .registration-form > .field-password1, .registration-form > .field-password2 { order: 0; }
+  .registration-form > .registration-actions { order: 2; }
+}
+
 @media (max-width: 900px) {
   .registration-screen {
     padding-top: 34px;

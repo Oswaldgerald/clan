@@ -18,20 +18,31 @@
   <section class="card registration-card">
     <div class="registration-card-heading">
       <div><h2>Account Details</h2><p class="muted">Taarifa za akaunti</p></div>
-      <span>All fields are required</span>
+      <span>Only phone number is optional</span>
     </div>
-    <form method="post" class="registration-form">
+    <form method="post" class="registration-form" novalidate>
       {% csrf_token %}
-      {{ form.non_field_errors }}
-      {% for field in form %}
-        <div class="registration-field field-{{ field.name }}">
-          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-          {{ field }}
-          {% if field.help_text and field.name != "password1" %}<p class="field-help">{{ field.help_text|safe }}</p>{% endif %}
-          {{ field.errors }}
+      {% if form.errors %}
+        <div class="registration-error-summary" role="alert" tabindex="-1" data-error-summary>
+          <i data-lucide="circle-alert" aria-hidden="true"></i>
+          <div>
+            <strong>Please fix {{ form.errors|length }} problem{{ form.errors|length|pluralize }} below</strong>
+            <ul>
+              {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+              {% for field in form %}{% if field.errors %}<li><a href="#{{ field.id_for_label }}">{{ field.label }}</a>: {{ field.errors|first }}</li>{% endif %}{% endfor %}
+            </ul>
+          </div>
         </div>
-        {% if field.name == "password2" %}
-          <div class="password-guidance">
+      {% endif %}
+      {% for field in form %}
+        <div class="registration-field field-{{ field.name }}{% if field.errors %} has-error{% endif %}">
+          <label for="{{ field.id_for_label }}">{{ field.label }}{% if not field.field.required %} <span class="optional-tag">Optional</span>{% endif %}</label>
+          {{ field }}
+          {% if field.help_text and field.name != "password1" %}<p class="field-help" id="{{ field.auto_id }}_help">{{ field.help_text|safe }}</p>{% endif %}
+          {% if field.errors %}<div class="field-error" id="{{ field.auto_id }}_error">{{ field.errors }}</div>{% endif %}
+        </div>
+        {% if field.name == "password1" %}
+          <div class="password-guidance" id="{{ field.auto_id }}_help">
             <i data-lucide="shield-check" aria-hidden="true"></i>
             <span>Use at least 8 characters. Avoid a common, entirely numeric password or one too similar to your personal details.</span>
           </div>

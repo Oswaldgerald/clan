@@ -283,6 +283,22 @@
       });
     }
 
+    function setupErrorSummary() {
+      const summary = document.querySelector('[data-error-summary]');
+      if (!summary) return;
+      summary.focus();
+      summary.addEventListener('click', (event) => {
+        const link = event.target.closest('a[href^="#"]');
+        if (!link) return;
+        const target = document.getElementById(link.getAttribute('href').slice(1));
+        if (!target) return;
+        event.preventDefault();
+        const select2 = target.classList.contains('select2-hidden-accessible') && target.nextElementSibling?.querySelector('.select2-selection');
+        (select2 || target).focus();
+        (select2 || target).scrollIntoView({ block: 'center' });
+      });
+    }
+
     function setupMessages() {
       document.querySelectorAll('[data-message-dismiss]').forEach((button) => {
         button.addEventListener('click', () => {
@@ -302,6 +318,7 @@
       setupSearchableSelects();
       setupLivingStatusControls();
       setupLocationControls();
+      setupErrorSummary();
       setupAccountMenu();
       setupSidebarSections();
       setupNavigation();
