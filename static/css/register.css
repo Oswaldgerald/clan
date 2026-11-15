@@ -257,6 +257,52 @@
   .registration-form > .registration-actions { order: 2; }
 }
 
+@media (min-width: 901px) {
+  .registration-page main { display: flex; align-items: center; }
+  .registration-screen { width: min(100% - 48px, 920px); padding: 20px 0 24px; }
+  .registration-intro { display: grid; grid-template-columns: auto 1fr auto; column-gap: 14px; align-items: center; max-width: none; margin-bottom: 12px; text-align: left; }
+  .registration-icon { grid-row: span 2; width: 44px; height: 44px; margin: 0; }
+  .registration-intro .section-translation { display: none; }
+  .registration-intro h1 { font-size: 24px; }
+  .registration-intro > p:not(.section-translation) { margin: 2px 0 0; font-size: 14px; }
+  .registration-notice { grid-column: 3; grid-row: 1 / span 2; max-width: 300px; margin: 0; padding: 8px 12px; border: 1px solid rgba(255, 255, 255, .28); border-radius: 8px; background: rgba(8, 35, 36, .32); font-size: 12px; line-height: 1.35; }
+  .registration-card-heading { display: none; }
+  .registration-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "summary summary"
+      "username email"
+      "first last"
+      "phone gender"
+      "password1 password2"
+      "guidance guidance"
+      "actions actions";
+    gap: 10px 18px;
+    padding: 18px 22px;
+  }
+  .registration-form > * { order: 0 !important; }
+  .registration-form > .registration-error-summary { grid-area: summary; }
+  .registration-form > .registration-field.field-username { grid-area: username; }
+  .registration-form > .field-email { grid-area: email; }
+  .registration-form > .field-first_name { grid-area: first; }
+  .registration-form > .field-last_name { grid-area: last; }
+  .registration-form > .registration-field.field-phone_number { grid-area: phone; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+  .registration-form > .field-gender { grid-area: gender; }
+  .registration-form > .field-password1 { grid-area: password1; }
+  .registration-form > .field-password2 { grid-area: password2; }
+  .registration-form > .password-guidance { grid-area: guidance; margin-top: -4px; padding: 0; border: 0; background: transparent; color: var(--muted); font-size: 11px; }
+  .registration-form > .password-guidance svg { width: 14px; height: 14px; flex-basis: 14px; }
+  .registration-form > .field-phone_number > .field-help,
+  .registration-form > .field-password2 > .field-help { display: none; }
+  .registration-form > .registration-actions { grid-area: actions; padding-top: 0; }
+  .registration-field label { margin-bottom: 5px; font-size: 14px; }
+  .registration-field input:not([type="hidden"]) { min-height: 40px; height: 40px; padding-block: 8px; }
+  .registration-field .select2-container .select2-selection--single { height: 40px; }
+  .registration-field .select2-container .select2-selection--single .select2-selection__rendered,
+  .registration-field .select2-container .select2-selection--single .select2-selection__arrow { height: 38px; line-height: 38px; }
+  .registration-field .field-help { margin-top: 4px; font-size: 11px; }
+}
+
 @media (max-width: 900px) {
   .registration-screen {
     padding-top: 34px;
