@@ -49,7 +49,7 @@
 
 .registration-intro .section-translation {
   margin: 0 0 5px;
-  color: #d9efff;
+  color: #dcefe2;
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
@@ -57,13 +57,13 @@
 
 .registration-intro h1 {
   color: #fff;
-  font-size: 34px;
+  font-size: 32px;
   text-shadow: 0 2px 12px rgba(4, 24, 26, .34);
 }
 
 .registration-intro > p:not(.section-translation) {
   margin: 9px auto 0;
-  color: #f3f8fa;
+  color: #f6f7f2;
   font-size: 16px;
   text-shadow: 0 1px 8px rgba(4, 24, 26, .42);
 }
@@ -75,7 +75,7 @@
   margin-top: 14px;
   color: #fff;
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .registration-notice svg {
@@ -100,12 +100,12 @@
   gap: 18px;
   padding: 18px 22px;
   border-bottom: 1px solid var(--line);
-  background: rgba(251, 253, 255, .9);
+  background: rgba(252, 252, 248, .9);
 }
 
 .registration-card-heading h2 {
   color: var(--navy);
-  font-size: 19px;
+  font-size: 18px;
 }
 
 .registration-card-heading p {
@@ -168,10 +168,10 @@
   align-items: flex-start;
   gap: 9px;
   padding: 11px 13px;
-  border: 1px solid #cfe3f2;
+  border: 1px solid #d2e5d8;
   border-radius: 7px;
-  background: #f5faff;
-  color: #365766;
+  background: #f6faf5;
+  color: #3a5446;
   font-size: 12px;
 }
 
@@ -226,7 +226,7 @@
   }
 
   .registration-intro > p:not(.section-translation) {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .registration-notice {
@@ -297,7 +297,7 @@
   }
 
   .registration-intro h1 {
-    font-size: 25px;
+    font-size: 24px;
   }
 
   .registration-card-heading {

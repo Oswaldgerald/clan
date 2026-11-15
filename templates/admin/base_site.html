@@ -5,6 +5,7 @@
 
 {% block extrastyle %}
   {{ block.super }}
+  <link rel="preload" href="{% static 'fonts/inter/Inter-Variable.woff2' %}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{% static 'admin/css/moshi-admin.css' %}">
 {% endblock %}
 

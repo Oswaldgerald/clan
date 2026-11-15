@@ -65,23 +65,25 @@
 
 <div class="responsive-table"><table class="member-directory-table">
   <thead>
-    <tr><th>Member ID</th><th>Name</th><th>Account Role</th><th>Gender</th><th>Life Status</th><th>Status</th></tr>
+    <tr><th>Member</th><th>Gender</th><th>Life Status</th><th>Status</th><th>Account Role</th></tr>
   </thead>
   <tbody>
     {% for member in members %}
       <tr>
-        <td><span class="member-code">{{ member.member_id }}</span></td>
         <td><a class="member-identity" href="{{ member.get_absolute_url }}">
           <span class="member-list-avatar">{% if member.profile_photo %}<img src="{{ member.profile_photo.url }}" alt="">{% else %}{{ member.first_name|slice:":1" }}{{ member.last_name|slice:":1" }}{% endif %}</span>
-          <span class="member-name">{{ member.full_name }}</span>
+          <span class="member-identity-copy">
+            <span class="member-name">{{ member.full_name }}</span>
+            <span class="member-code">{{ member.member_id }}</span>
+          </span>
         </a></td>
-        <td><span class="role-label">{% if member.account %}{{ member.account.get_role_display }}{% else %}Clan record only{% endif %}</span></td>
         <td>{{ member.get_gender_display|default:"-" }}</td>
         <td><span class="life-badge {% if member.is_living %}is-living{% else %}is-deceased{% endif %}">{% if member.is_living %}Living{% else %}Deceased{% endif %}</span></td>
         <td><span class="status-badge status-{{ member.status }}">{{ member.get_status_display }}</span></td>
+        <td><span class="role-label">{% if member.account %}{{ member.account.get_role_display }}{% else %}Clan record only{% endif %}</span></td>
       </tr>
     {% empty %}
-      <tr><td colspan="6" class="empty-state"><i data-lucide="search-x" aria-hidden="true"></i><span>No members match the selected filters.</span></td></tr>
+      <tr><td colspan="5" class="empty-state"><i data-lucide="search-x" aria-hidden="true"></i><span>No members match the selected filters.</span></td></tr>
     {% endfor %}
   </tbody>
 </table></div>

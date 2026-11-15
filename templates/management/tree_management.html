@@ -52,9 +52,9 @@
         <td>{{ relationship.get_relationship_type_display }}</td>
         <td>{{ relationship.to_person.full_name }}</td>
         <td><span class="status-badge status-{{ relationship.status }}">{{ relationship.get_status_display }}</span></td>
-        <td><div class="action-group">
-          <a class="button button-small" href="{% url 'management-relationship-edit' relationship.pk %}">Edit</a>
-          <a class="button button-danger button-small" href="{% url 'management-relationship-delete' relationship.pk %}">Delete</a>
+        <td><div class="action-group row-actions">
+          <a class="button button-secondary button-small" href="{% url 'management-relationship-edit' relationship.pk %}"><i data-lucide="pencil" aria-hidden="true"></i>Edit</a>
+          <a class="button button-danger-quiet button-small button-icon" href="{% url 'management-relationship-delete' relationship.pk %}" aria-label="Delete relationship" title="Delete"><i data-lucide="trash-2" aria-hidden="true"></i></a>
         </div></td>
       </tr>
       {% empty %}<tr><td colspan="5" class="muted">No direct relationship records found.</td></tr>{% endfor %}

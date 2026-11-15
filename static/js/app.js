@@ -263,8 +263,20 @@
       });
     }
 
+    function setupMessages() {
+      document.querySelectorAll('[data-message-dismiss]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const message = button.closest('[data-message]');
+          const list = message?.parentElement;
+          message?.remove();
+          if (list && !list.children.length) list.remove();
+        });
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       setupPageLoader();
+      setupMessages();
       setupDatePickers();
       setupPhoneInputs();
       setupSearchableSelects();

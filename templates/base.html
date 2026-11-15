@@ -5,12 +5,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ clan_name }} Clan Registry{% endblock %}</title>
+  <meta name="theme-color" content="#173a2c">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f6b4f'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M16 11v5M9 21v-2.5h14V21M16 16v2.5'/%3E%3Crect x='12.5' y='5.5' width='7' height='6' rx='1.5'/%3E%3Crect x='5.5' y='21' width='7' height='6' rx='1.5'/%3E%3Crect x='19.5' y='21' width='7' height='6' rx='1.5'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="preload" href="{% static 'fonts/inter/Inter-Variable.woff2' %}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   {% block extra_css %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="page-loader" data-page-loader hidden role="status" aria-live="polite" aria-label="Loading">
     <div class="page-loader-content">
       <span class="loader-mark" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -41,7 +45,7 @@
               {% endif %}
             </span>
             <span>{{ request.user }}</span>
-            <span class="account-chevron" aria-hidden="true">▼</span>
+            <i class="account-chevron" data-lucide="chevron-down" aria-hidden="true"></i>
           </button>
           <div class="account-dropdown" role="menu" data-account-dropdown>
             <a href="{% url 'member-profile' %}" role="menuitem">Profile</a>
@@ -100,11 +104,15 @@
       {% endif %}
     </aside>
     {% endif %}
-    <main>
+    <main id="main-content" tabindex="-1">
       {% if messages %}
         <div class="messages">
           {% for message in messages %}
-            <div class="message">{{ message }}</div>
+            <div class="message message-{{ message.level_tag|default:'info' }}" role="{% if message.level_tag == 'error' or message.level_tag == 'warning' %}alert{% else %}status{% endif %}" data-message>
+              <i data-lucide="{% if message.level_tag == 'success' %}circle-check{% elif message.level_tag == 'error' %}circle-alert{% elif message.level_tag == 'warning' %}triangle-alert{% else %}info{% endif %}" aria-hidden="true"></i>
+              <span>{{ message }}</span>
+              <button class="message-dismiss" type="button" aria-label="Dismiss message" data-message-dismiss><i data-lucide="x" aria-hidden="true"></i></button>
+            </div>
           {% endfor %}
         </div>
       {% endif %}

@@ -20,7 +20,7 @@
     </div>
     <div class="action-group">
       <button class="button button-secondary" type="button" data-import-toggle aria-expanded="{% if show_import_panel %}true{% else %}false{% endif %}" aria-controls="member-import-panel"><i data-lucide="upload" aria-hidden="true"></i>Import Members</button>
-      <a class="button" href="{% url 'management-member-export' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}" download><i data-lucide="file-spreadsheet" aria-hidden="true"></i>Export XLS</a>
+      <a class="button button-secondary" href="{% url 'management-member-export' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}" download><i data-lucide="file-spreadsheet" aria-hidden="true"></i>Export XLS</a>
     </div>
   </div>
   <section id="member-import-panel" class="card management-import-panel" data-import-panel {% if not show_import_panel %}hidden{% endif %}>
@@ -54,21 +54,26 @@
 </section>
 
 <div class="responsive-table"><table class="member-management-table">
-    <thead><tr><th>Member ID</th><th>Name</th><th>Status</th><th>Actions</th></tr></thead>
+    <thead><tr><th>Member</th><th>Status</th><th class="actions-heading">Actions</th></tr></thead>
     <tbody>
       {% for member in members %}
         <tr>
-          <td><span class="member-code">{{ member.member_id }}</span></td>
-          <td><a class="member-name" href="{{ member.get_absolute_url }}">{{ member.full_name }}</a></td>
+          <td><a class="member-identity" href="{{ member.get_absolute_url }}">
+            <span class="member-list-avatar">{% if member.profile_photo %}<img src="{{ member.profile_photo.url }}" alt="">{% else %}{{ member.first_name|slice:":1" }}{{ member.last_name|slice:":1" }}{% endif %}</span>
+            <span class="member-identity-copy">
+              <span class="member-name">{{ member.full_name }}</span>
+              <span class="member-code">{{ member.member_id }}</span>
+            </span>
+          </a></td>
           <td><span class="status-badge status-{{ member.status }}">{{ member.get_status_display }}</span></td>
           <td><div class="action-group row-actions">
-            <a class="button button-small" href="{% url 'management-member-edit' member.pk %}"><i data-lucide="pencil" aria-hidden="true"></i>Edit</a>
-            <a class="button button-danger button-small" href="{% url 'management-member-delete' member.pk %}"><i data-lucide="trash-2" aria-hidden="true"></i>Delete</a>
-            <a class="button button-secondary button-small" href="/admin/members/person/{{ member.pk }}/change/"><i data-lucide="settings" aria-hidden="true"></i>Admin</a>
+            <a class="button button-secondary button-small" href="{% url 'management-member-edit' member.pk %}"><i data-lucide="pencil" aria-hidden="true"></i>Edit</a>
+            <a class="button button-ghost button-small button-icon" href="/admin/members/person/{{ member.pk }}/change/" aria-label="Open {{ member.full_name }} in admin" title="Open in admin"><i data-lucide="settings" aria-hidden="true"></i></a>
+            <a class="button button-danger-quiet button-small button-icon" href="{% url 'management-member-delete' member.pk %}" aria-label="Delete {{ member.full_name }}" title="Delete"><i data-lucide="trash-2" aria-hidden="true"></i></a>
           </div></td>
         </tr>
       {% empty %}
-        <tr><td colspan="4" class="empty-state"><i data-lucide="users" aria-hidden="true"></i><span>No members found.</span></td></tr>
+        <tr><td colspan="3" class="empty-state"><i data-lucide="users" aria-hidden="true"></i><span>No members found.</span></td></tr>
       {% endfor %}
     </tbody>
 </table></div>
